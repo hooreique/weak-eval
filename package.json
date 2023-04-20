@@ -1,0 +1,11 @@
+{
+  "name": "weak-eval",
+  "version": "0.1.0",
+  "description": "Weak evaluation for coding test",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {},
+  "keywords": [],
+  "author": "Je-yeong Song",
+  "license": "ISC"
+}
