@@ -1,6 +1,6 @@
 import { open, readdir } from 'node:fs/promises';
 import path from 'node:path';
-import runOne from './runOne.js';
+import evaluate from './evaluate.js';
 
 const isValidPathPair = pathPair => pathPair &&
     Array.isArray(pathPair) &&
@@ -38,32 +38,43 @@ const getPathPairMap = (dirPath, basenames) => {
     return pathPairMap;
 };
 
-const toStreamPairMap = pathPairMap => {
-    const streamPairMap = new Map();
+const toFileHandlePromisePairMap = pathPairMap => {
+    const fileHandlePromisePairMap = new Map();
+
     pathPairMap.forEach((pathPair, key) => {
-        streamPairMap.set(key, [
-            open(pathPair[0]).then(fd => fd.createReadStream()),
-            open(pathPair[1]).then(fd => fd.createReadStream()),
+        fileHandlePromisePairMap.set(key, [
+            open(pathPair[0]),
+            open(pathPair[1]),
         ]);
     });
-    return streamPairMap;
+
+    pathPairMap.clear();
+
+    return fileHandlePromisePairMap;
 };
 
-const runAll = ({
-    className,
-    outDirPath,
-    testsDirPath,
-}) => {
-    console.log('className:', className,
-        '\noutDir:', outDirPath,
-        '\ntestsDir:', testsDirPath);
+const createViewAndEvaluate = (fileHandlePromisePairMap, {classPath, className}) => {
+    const view = new Map();
+
+    fileHandlePromisePairMap.forEach((fileHandlePromisePair, key) => {
+        view.set(key, evaluate(fileHandlePromisePair, {classPath, className}).catch(() => {}));
+    });
+
+    fileHandlePromisePairMap.clear();
+
+    return view;
+};
+
+const getView = (testsDirPath, { classPath, className }) => {
+    console.log('testsDirPath:', testsDirPath,
+        '\nclassPath:', classPath,
+        '\nclassName:', className);
 
     return readdir(testsDirPath)
-        .then(testFileBasenames => getPathPairMap(testsDirPath, testFileBasenames))
-        .then(toStreamPairMap)
-        .then(testFileStreamPairMap => [...testFileStreamPairMap])
-        .then(tests => Promise.all(tests.map(runOne)))
-        .then(console.log);
+        .then(basenames => getPathPairMap(testsDirPath, basenames))
+        .then(toFileHandlePromisePairMap)
+        .then(fileHandlePromisePairMap =>
+            createViewAndEvaluate(fileHandlePromisePairMap, { classPath, className }));
 };
 
-export default runAll;
+export default getView;

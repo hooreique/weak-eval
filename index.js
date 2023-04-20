@@ -1,6 +1,6 @@
 import { isAbsolute } from 'node:path';
 import { createInterface } from 'node:readline/promises';
-import weakEval from './weakEval.js';
+import main from './main.js';
 
 const dir = process.argv[2];
 
@@ -16,6 +16,6 @@ const pause = () => {
     rl.question('Press enter...').then(answer => rl.close());
 };
 
-weakEval(dir)
+main(dir)
     .catch(console.error)
     .finally(() => pause());
