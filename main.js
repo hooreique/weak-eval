@@ -2,11 +2,25 @@ import { join } from 'node:path';
 import getView from './getView.js';
 import simpleCmdSpawn from './simpleCmdSpawn.js';
 
+const WAITING = {};
 let cnt = 0;
-const write = (view, status) => {
+const write = async (view, status) => {
     console.clear();
-    console.log('frame #' + ++cnt);
-    console.log(view);
+    console.log(`frame #${++cnt}`);
+
+    const current = [];
+
+    for (let [key, promise] of view) {
+        const value = await Promise.race([promise, WAITING]);
+        current.push([key, value === WAITING ?
+            '채점 중...' :
+            value === undefined ?
+                '시간 초과' :
+                value ?
+                    '정답입니다.' : '틀렸습니다.']);
+    }
+
+    console.log(current);
 };
 
 const refreshEveryMs = (view, interval = 100) => new Promise((resolve, reject) => {

@@ -1,6 +1,6 @@
-import {spawn} from 'node:child_process';
+import { spawn } from 'node:child_process';
 
-const evaluate = ([inFileHandlePromise, outFileHandlePromise], {classPath, className}) => {
+const evaluate = ([inFileHandlePromise, outFileHandlePromise], { classPath, className }) => {
     // const process = spawn('cmd.exe', [
     //     '/c',
     //     'java',
@@ -15,11 +15,11 @@ const evaluate = ([inFileHandlePromise, outFileHandlePromise], {classPath, class
     inFileHandlePromise.then(fileHandle => fileHandle.close());
     outFileHandlePromise.then(fileHandle => fileHandle.close());
 
-    const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min
+    const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
     return new Promise((resolve, reject) => {
         const timeoutId = setTimeout(() => {
-            resolve();
+            resolve(Math.random() < 0.7);
         }, getRandomArbitrary(1_000, 6_000));
 
         setTimeout(() => {

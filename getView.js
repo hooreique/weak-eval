@@ -53,11 +53,11 @@ const toFileHandlePromisePairMap = pathPairMap => {
     return fileHandlePromisePairMap;
 };
 
-const createViewAndEvaluate = (fileHandlePromisePairMap, {classPath, className}) => {
+const createViewAndEvaluate = (fileHandlePromisePairMap, { classPath, className }) => {
     const view = new Map();
 
     fileHandlePromisePairMap.forEach((fileHandlePromisePair, key) => {
-        view.set(key, evaluate(fileHandlePromisePair, {classPath, className}).catch(() => {}));
+        view.set(key, evaluate(fileHandlePromisePair, { classPath, className }).catch(() => { }));
     });
 
     fileHandlePromisePairMap.clear();
