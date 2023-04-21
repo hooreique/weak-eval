@@ -24,32 +24,33 @@ const print = async (view, meta) => {
   console.log(currentView);
 };
 
-const render = (view, interval = 100, timeout = 15_000) => new Promise((resolve, reject) => {
-  const meta = {
-    WAITING: {},
-    cnt: 0,
-    done: false,
-  };
+const render = (view, interval = 100, timeout = 15_000) =>
+  new Promise((resolve, reject) => {
+    const meta = {
+      WAITING: {},
+      cnt: 0,
+      done: false,
+    };
 
-  const intervalId = setInterval(() => {
-    if (meta.done) {
-      clearInterval(intervalId);
-      resolve();
-    } else {
-      console.clear();
-      print(view, meta);
-    }
-  }, interval);
+    const intervalId = setInterval(() => {
+      if (meta.done) {
+        clearInterval(intervalId);
+        resolve();
+      } else {
+        console.clear();
+        print(view, meta);
+      }
+    }, interval);
 
-  setTimeout(() => {
-    if (meta.done) {
-      clearInterval(intervalId);
-      resolve();
-    } else {
-      clearInterval(intervalId);
-      reject('채점이 너무 오래 걸립니다.');
-    }
-  }, timeout);
-});
+    setTimeout(() => {
+      if (meta.done) {
+        clearInterval(intervalId);
+        resolve();
+      } else {
+        clearInterval(intervalId);
+        reject('채점이 너무 오래 걸립니다.');
+      }
+    }, timeout);
+  });
 
 export default render;
