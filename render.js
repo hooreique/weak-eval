@@ -13,7 +13,7 @@ const print = async (view, meta) => {
 
     currentView.push([key, value === meta.WAITING ?
       '채점 중...' :
-      value === undefined ?
+      value === null ?
         '시간 초과' :
         value ?
           '정답입니다.' : '틀렸습니다.']);
