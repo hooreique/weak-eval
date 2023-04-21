@@ -32,8 +32,11 @@ const render = (view, interval = 100, timeout = 15_000) =>
       done: false,
     };
 
+    let timeoutId;
+
     const intervalId = setInterval(() => {
       if (meta.done) {
+        if (timeoutId) clearTimeout(timeoutId);
         clearInterval(intervalId);
         resolve();
       } else {
@@ -42,7 +45,7 @@ const render = (view, interval = 100, timeout = 15_000) =>
       }
     }, interval);
 
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
       if (meta.done) {
         clearInterval(intervalId);
         resolve();
