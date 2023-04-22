@@ -1,5 +1,5 @@
 import print from './print.js';
-import { listen } from './util/channel.js';
+import { subscribe } from './util/channel.js';
 
 export default (view, info, interval = 500) => {
 
@@ -23,7 +23,7 @@ export default (view, info, interval = 500) => {
             renderFrame().then(resolve);
         };
 
-        listen('COMPLETE')(end);
-        listen('TIMEOUT')(end);
+        subscribe('COMPLETE')(end);
+        subscribe('TIMEOUT')(end);
     });
 };
