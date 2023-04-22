@@ -5,6 +5,11 @@ import { destroy, emit } from './util/channel.js';
 import peek from './util/peek.js';
 import repeat from './util/repeat.js';
 
+const complete = () => {
+    destroy('TIMEOUT');
+    emit('COMPLETE')();
+};
+
 const createView = (fileHandlePromisePairQueue, config, maxCapacity = 8) => {
     const capacity = Math.min(maxCapacity, fileHandlePromisePairQueue.size());
     let cnt = 0;
@@ -13,10 +18,7 @@ const createView = (fileHandlePromisePairQueue, config, maxCapacity = 8) => {
 
     const pollAndSet = () => {
         if (fileHandlePromisePairQueue.isEmpty()) {
-            if (++cnt === capacity) {
-                destroy('TIMEOUT');
-                emit('COMPLETE')();
-            }
+            if (++cnt === capacity) complete();
         } else {
             const [testId, fileHandlePromisePair] = fileHandlePromisePairQueue.poll();
             view.set(testId, evaluate(testId, fileHandlePromisePair, config)
