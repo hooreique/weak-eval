@@ -18,6 +18,9 @@ export default (
 
     const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
+    let timeoutIdIn;
+    let timeoutIdOut;
+
     return new Promise((resolve, reject) => {
         let timeoutIdIn;
         let timeoutIdOut;
