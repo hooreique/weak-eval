@@ -19,7 +19,7 @@ const print = async (view, meta) => {
                     '정답입니다.' : '틀렸습니다.']);
     }
 
-    // meta.completed = !waiting;
+    meta.completed = !waiting;
 
     console.log(currentView);
 };
