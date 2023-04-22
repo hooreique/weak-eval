@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { open } from 'node:fs/promises';
 import { subscribe, unsubscribe } from './util/channel.js';
 
 /**
@@ -9,11 +10,11 @@ import { subscribe, unsubscribe } from './util/channel.js';
  */
 export default (
     { classPath, className },
-    [inFileHandlePromise, outFileHandlePromise],
+    [inPath, outPath],
 ) => {
 
-    inFileHandlePromise.then(fileHandle => fileHandle.close());
-    outFileHandlePromise.then(fileHandle => fileHandle.close());
+    open(inPath).then(fileHandle => fileHandle.close());
+    open(outPath).then(fileHandle => fileHandle.close());
 
     const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
