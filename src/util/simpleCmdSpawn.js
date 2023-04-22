@@ -11,7 +11,7 @@ const closeStdio = (process, context) => {
     }
 };
 
-const simpleCmdSpawn = (command, args, timeLimit = 5000) => {
+export default (command, args, timeLimit = 5000) => {
     const process = spawn('cmd.exe', [
         '/c',
         command,
@@ -46,5 +46,3 @@ const simpleCmdSpawn = (command, args, timeLimit = 5000) => {
         });
     });
 };
-
-export default simpleCmdSpawn;

@@ -13,7 +13,7 @@ const isValidPathPair = pathPair => pathPair &&
     isAbsolute(pathPair[0]) &&
     isAbsolute(pathPair[1]);
 
-const getPathPairQueue = (dirPath, basenames) => {
+export default (dirPath, basenames) => {
     const pathPairMap = new Map();
 
     basenames.forEach(basename => {
@@ -36,5 +36,3 @@ const getPathPairQueue = (dirPath, basenames) => {
 
     return newQueueFromMap(pathPairMap);
 };
-
-export default getPathPairQueue;

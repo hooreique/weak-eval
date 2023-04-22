@@ -1,31 +1,38 @@
 import { open, readdir } from 'node:fs/promises';
 import evaluate from './evaluate.js';
 import getPathPairQueue from './getPathPairQueue.js'
-import { listen, emit } from './util/channel.js';
+import { destroy, emit } from './util/channel.js';
 import peek from './util/peek.js';
 import repeat from './util/repeat.js';
 
-const createView = (fileHandlePromisePairQueue, { classPath, className }, initCapacity = 8) => {
+const createView = (fileHandlePromisePairQueue, config, maxCapacity = 8) => {
+    const capacity = Math.min(maxCapacity, fileHandlePromisePairQueue.size());
+    let cnt = 0;
+
     const view = new Map();
 
-    listen('eval')(() => {
-        if (!fileHandlePromisePairQueue.isEmpty()) {
+    const pollAndSet = () => {
+        if (fileHandlePromisePairQueue.isEmpty()) {
+            if (++cnt === capacity) {
+                destroy('TIMEOUT');
+                emit('COMPLETE')();
+            }
+        } else {
             const [testId, fileHandlePromisePair] = fileHandlePromisePairQueue.poll();
-            view.set(testId, evaluate(testId, fileHandlePromisePair, { classPath, className })
-                .then(peek(emit('eval'))));
+            view.set(testId, evaluate(testId, fileHandlePromisePair, config)
+                .then(peek(pollAndSet))
+                .catch(err => ({ testId, result: null })));
         }
-    });
+    };
 
-    repeat(emit('eval'))(initCapacity);
+    repeat(pollAndSet)(capacity);
 
     return view;
 };
 
-const getView = (testsDirPath, { classPath, className }) =>
+export default (testsDirPath, config) =>
     readdir(testsDirPath)
         .then(basenames => getPathPairQueue(testsDirPath, basenames)
             .pipe(pathPair => pathPair.map(path => open(path))))
         .then(fileHandlePromisePairQueue =>
-            createView(fileHandlePromisePairQueue, { classPath, className }));
-
-export default getView;
+            createView(fileHandlePromisePairQueue, config));
