@@ -1,5 +1,5 @@
 
-const DONE = {};
+const VALUE = {}; // 임의의 상수
 
 export default async (view, meta) => {
     console.log(`frame #${++meta.counter}`);
@@ -7,9 +7,9 @@ export default async (view, meta) => {
     const currentView = [];
 
     for (let [testId, promise] of view) {
-        const value = await Promise.race([promise, DONE]);
+        const value = await Promise.race([promise, VALUE]);
 
-        currentView.push([testId, value === DONE ?
+        currentView.push([testId, value === VALUE ?
             '채점 중...' :
             value.result === null ?
                 '시간 초과' :
