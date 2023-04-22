@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import getView from './getView.js';
 import render from './render.js';
-import simpleCmdSpawn from './simpleCmdSpawn.js';
+import simpleCmdSpawn from './util/simpleCmdSpawn.js';
 
 const compile = ({ outDirPath, codeFilePath }) =>
     simpleCmdSpawn('javac', [

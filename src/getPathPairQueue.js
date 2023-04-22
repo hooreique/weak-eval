@@ -1,5 +1,5 @@
 import { isAbsolute, join, parse } from 'node:path';
-import { newQueueFromMap } from './queueUtil.js';
+import { newQueueFromMap } from './util/queueUtil.js';
 
 const isValidPathPair = pathPair => pathPair &&
     Array.isArray(pathPair) &&
