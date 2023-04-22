@@ -7,7 +7,7 @@ import { spawn } from 'node:child_process';
  * false if the answer is incorrect,
  * null if time is out.
  */
-const evaluate = (
+export default (
     testId,
     [inFileHandlePromise, outFileHandlePromise],
     { classPath, className },
@@ -53,5 +53,3 @@ const evaluate = (
     //         //   스트림 데이터를 토크나이징 해서 한 토큰 한 토큰씩 비교하기
     //     });
 };
-
-export default evaluate;

@@ -3,7 +3,7 @@ import compile from './compile.js';
 import getView from './getView.js';
 import render from './render.js';
 
-const main = (dir) => {
+export default (dir, timeLimit = 100_000_000) => {
     const className = 'Main';
     const codeFilePath = join(dir, 'solutions', className + '.java');
     const outDirPath = join(dir, 'out');
@@ -18,5 +18,3 @@ const main = (dir) => {
             testsDirPath,
         }));
 };
-
-export default main;

@@ -1,5 +1,5 @@
 
-const print = async (view, meta) => {
+export default async (view, meta) => {
     console.log(`frame #${++meta.counter}`);
 
     const currentView = [];
@@ -23,5 +23,3 @@ const print = async (view, meta) => {
 
     console.log(currentView);
 };
-
-export default print;
