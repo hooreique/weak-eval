@@ -1,30 +1,6 @@
+import print from './print.js';
 
-const print = async (view, meta) => {
-    console.log(`frame #${++meta.counter}`);
-
-    const currentView = [];
-
-    let waiting = false;
-
-    for (let [key, promise] of view) {
-        const value = await Promise.race([promise, meta.DONE]);
-
-        if (value === meta.DONE) waiting = true;
-
-        currentView.push([key, value === meta.DONE ?
-            '채점 중...' :
-            value === null ?
-                '시간 초과' :
-                value ?
-                    '정답입니다.' : '틀렸습니다.']);
-    }
-
-    meta.completed = !waiting;
-
-    console.log(currentView);
-};
-
-const render = (view, info, interval = 100, timeLimit = 15_000) => {
+const render = (view, info, interval = 100, timeLimit = 100_015_000) => {
 
     const meta = {
         DONE: {}, // 임의의 상수
