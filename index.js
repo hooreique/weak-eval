@@ -4,8 +4,9 @@ import main from './main.js';
 
 const dir = process.argv[2];
 
-if (dir && typeof dir === 'string' && isAbsolute(dir)) console.log('dir:', dir);
-else throw new Error('Provide a proper absolute directory');
+const isProperDir = dir => dir && typeof dir === 'string' && isAbsolute(dir);
+
+if (!isProperDir(dir)) throw new Error('Provide a proper absolute directory');
 
 const pause = () => {
     const rl = createInterface({
@@ -18,4 +19,4 @@ const pause = () => {
 
 main(dir)
     .catch(console.error)
-    .finally(() => pause());
+    .finally(pause);
