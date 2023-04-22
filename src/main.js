@@ -1,16 +1,7 @@
 import { join } from 'node:path';
+import compile from './compile.js';
 import getView from './getView.js';
 import render from './render.js';
-import simpleCmdSpawn from './util/simpleCmdSpawn.js';
-
-const compile = ({ outDirPath, codeFilePath }) =>
-    simpleCmdSpawn('javac', [
-        '-encoding',
-        'UTF-8',
-        '-d',
-        outDirPath,
-        codeFilePath,
-    ]);
 
 const main = (dir) => {
     const className = 'Main';
