@@ -2,16 +2,14 @@ import { spawn } from 'node:child_process';
 import { listen } from './util/channel.js';
 
 /**
- * @return Promise fulfilled with { testId, result }.
- * result:
+ * @return Promise fulfilled with result.
  * true if the answer is correct,
  * false if the answer is incorrect,
  * null if time is out.
  */
 export default (
-    testId,
-    [inFileHandlePromise, outFileHandlePromise],
     { classPath, className },
+    [inFileHandlePromise, outFileHandlePromise],
 ) => {
 
     inFileHandlePromise.then(fileHandle => fileHandle.close());
@@ -25,18 +23,18 @@ export default (
     return new Promise((resolve, reject) => {
         timeoutIdIn = setTimeout(() => {
             if (timeoutIdOut) clearTimeout(timeoutIdOut);
-            resolve({ testId, result: Math.random() < 0.5 });
+            resolve(Math.random() < 0.5);
         }, getRandomArbitrary(1_000, 4_000));
 
         timeoutIdOut = setTimeout(() => {
             if (timeoutIdIn) clearTimeout(timeoutIdIn);
-            resolve({ testId, result: null });
+            resolve(null);
         }, 3_000);
 
         listen('TIMEOUT')(() => {
             if (timeoutIdIn) clearTimeout(timeoutIdIn);
             if (timeoutIdOut) clearTimeout(timeoutIdOut);
-            reject({ testId, result: null });
+            reject();
         });
     });
 

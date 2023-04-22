@@ -11,9 +11,9 @@ export default async (view, meta) => {
 
         currentView.push([testId, value === VALUE ?
             '채점 중...' :
-            value.result === null ?
+            value === null ?
                 '시간 초과' :
-                value.result ?
+                value ?
                     '정답입니다.' : '틀렸습니다.']);
     }
 
