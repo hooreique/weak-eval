@@ -1,6 +1,6 @@
 import print from './print.js';
 
-const render = (view, info, interval = 100, timeLimit = 100_015_000) => {
+const render = (view, info, interval = 100, timeLimit = 15_000) => {
 
     const meta = {
         DONE: {}, // 임의의 상수
