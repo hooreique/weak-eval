@@ -11,8 +11,13 @@ export default (dir, timeLimit = 60_000) => {
     const outDirPath = join(dir, 'out');
     const testsDirPath = join(dir, 'tests');
 
+    const target = {
+        className,
+        classPath: outDirPath,
+    };
+
     return compile({ outDirPath, codeFilePath })
-        .then(() => getView(testsDirPath, { classPath: outDirPath, className }))
+        .then(() => getView(target, testsDirPath))
         .then(peek(() => { setTimer(timeLimit) }))
         .then(view => render(view, {
             className,

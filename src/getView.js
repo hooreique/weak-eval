@@ -10,7 +10,7 @@ const complete = () => {
     emit('COMPLETE')();
 };
 
-const createView = (fileHandlePromisePairQueue, config, maxCapacity = 8) => {
+const createView = (target, fileHandlePromisePairQueue, maxCapacity = 8) => {
     const capacity = Math.min(maxCapacity, fileHandlePromisePairQueue.size());
     let cnt = 0;
 
@@ -21,9 +21,9 @@ const createView = (fileHandlePromisePairQueue, config, maxCapacity = 8) => {
             if (++cnt === capacity) complete();
         } else {
             const [testId, fileHandlePromisePair] = fileHandlePromisePairQueue.poll();
-            view.set(testId, evaluate(testId, fileHandlePromisePair, config)
+            view.set(testId, evaluate(target, fileHandlePromisePair)
                 .then(peek(pollAndSet))
-                .catch(err => ({ testId, result: null })));
+                .catch(err => null));
         }
     };
 
@@ -32,9 +32,9 @@ const createView = (fileHandlePromisePairQueue, config, maxCapacity = 8) => {
     return view;
 };
 
-export default (testsDirPath, config) =>
+export default (target, testsDirPath) =>
     readdir(testsDirPath)
         .then(basenames => getPathPairQueue(testsDirPath, basenames)
             .pipe(pathPair => pathPair.map(path => open(path))))
         .then(fileHandlePromisePairQueue =>
-            createView(fileHandlePromisePairQueue, config));
+            createView(target, fileHandlePromisePairQueue));
