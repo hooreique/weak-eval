@@ -1,16 +1,15 @@
 import { spawn } from 'node:child_process';
+import { listen } from './util/channel.js';
 
 /**
- * @return Promise fulfilled with { testId, result }.
- * result:
+ * @return Promise fulfilled with result.
  * true if the answer is correct,
  * false if the answer is incorrect,
  * null if time is out.
  */
-const evaluate = (
-    testId,
-    [inFileHandlePromise, outFileHandlePromise],
+export default (
     { classPath, className },
+    [inFileHandlePromise, outFileHandlePromise],
 ) => {
 
     inFileHandlePromise.then(fileHandle => fileHandle.close());
@@ -18,15 +17,25 @@ const evaluate = (
 
     const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
+    let timeoutIdIn;
+    let timeoutIdOut;
+
     return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(() => {
-            resolve({ testId, result: Math.random() < 0.5 });
+        timeoutIdIn = setTimeout(() => {
+            if (timeoutIdOut) clearTimeout(timeoutIdOut);
+            resolve(Math.random() < 0.5);
         }, getRandomArbitrary(1_000, 4_000));
 
-        setTimeout(() => {
-            clearTimeout(timeoutId);
-            resolve({ testId, result: null });
+        timeoutIdOut = setTimeout(() => {
+            if (timeoutIdIn) clearTimeout(timeoutIdIn);
+            resolve(null);
         }, 3_000);
+
+        listen('TIMEOUT')(() => {
+            if (timeoutIdIn) clearTimeout(timeoutIdIn);
+            if (timeoutIdOut) clearTimeout(timeoutIdOut);
+            reject();
+        });
     });
 
     // return inFileHandlePromise
@@ -53,5 +62,3 @@ const evaluate = (
     //         //   스트림 데이터를 토크나이징 해서 한 토큰 한 토큰씩 비교하기
     //     });
 };
-
-export default evaluate;

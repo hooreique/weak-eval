@@ -1,24 +1,41 @@
 import { open, readdir } from 'node:fs/promises';
 import evaluate from './evaluate.js';
 import getPathPairQueue from './getPathPairQueue.js'
+import { destroy, emit } from './util/channel.js';
+import peek from './util/peek.js';
+import repeat from './util/repeat.js';
 
-const createView = (fileHandlePromisePairQueue, { classPath, className }) => {
-    const view = new Map();
-
-    while (!fileHandlePromisePairQueue.isEmpty()) {
-        const [testId, fileHandlePromisePair] = fileHandlePromisePairQueue.poll();
-        view.set(testId, evaluate(testId, fileHandlePromisePair, { classPath, className })
-            .catch(err => ({ testId, result: null })));
-    }
-
-    return view;
+const complete = () => {
+    destroy('TIMEOUT');
+    emit('COMPLETE')();
 };
 
-const getView = (testsDirPath, { classPath, className }) =>
-    readdir(testsDirPath)
+export default (subject, testsDirPath) => {
+    const createView = (fileHandlePromisePairQueue, maxCapacity = 8) => {
+        const capacity = Math.min(maxCapacity, fileHandlePromisePairQueue.size());
+        let cnt = 0;
+
+        const view = new Map();
+
+        const pollAndSet = () => {
+            if (fileHandlePromisePairQueue.isEmpty()) {
+                if (++cnt === capacity) complete();
+            } else {
+                const [testId, fileHandlePromisePair] = fileHandlePromisePairQueue.poll();
+                view.set(testId, evaluate(subject, fileHandlePromisePair)
+                    .then(peek(pollAndSet))
+                    .catch(err => null));
+            }
+        };
+
+        repeat(pollAndSet)(capacity);
+
+        return view;
+    };
+
+    return readdir(testsDirPath)
         .then(basenames => getPathPairQueue(testsDirPath, basenames)
             .pipe(pathPair => pathPair.map(path => open(path))))
         .then(fileHandlePromisePairQueue =>
-            createView(fileHandlePromisePairQueue, { classPath, className }));
-
-export default getView;
+            createView(fileHandlePromisePairQueue));
+};
