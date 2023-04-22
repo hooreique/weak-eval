@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { listen } from './util/channel.js';
 
 /**
  * @return Promise fulfilled with { testId, result }.
@@ -18,15 +19,25 @@ export default (
 
     const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
+    let timeoutIdIn;
+    let timeoutIdOut;
+
     return new Promise((resolve, reject) => {
-        const timeoutId = setTimeout(() => {
+        timeoutIdIn = setTimeout(() => {
+            if (timeoutIdOut) clearTimeout(timeoutIdOut);
             resolve({ testId, result: Math.random() < 0.5 });
         }, getRandomArbitrary(1_000, 4_000));
 
-        setTimeout(() => {
-            clearTimeout(timeoutId);
+        timeoutIdOut = setTimeout(() => {
+            if (timeoutIdIn) clearTimeout(timeoutIdIn);
             resolve({ testId, result: null });
         }, 3_000);
+
+        listen('TIMEOUT')(() => {
+            if (timeoutIdIn) clearTimeout(timeoutIdIn);
+            if (timeoutIdOut) clearTimeout(timeoutIdOut);
+            reject({ testId, result: null });
+        });
     });
 
     // return inFileHandlePromise

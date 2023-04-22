@@ -1,7 +1,8 @@
 
 export const newQueueFromMap = map => {
     const queue = {
-        isEmpty: () => map.size === 0,
+        size: () => map.size,
+        isEmpty: () => queue.size() === 0,
         peek: () => {
             if (queue.isEmpty()) return null;
             for (const entry of map) return entry;
