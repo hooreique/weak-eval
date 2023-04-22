@@ -2,8 +2,8 @@ import { spawn } from 'node:child_process';
 
 /*
  * 반환되는 프라미스에는
- *     정답시    true
- *     오답시    false
+ *     정답시 true
+ *     오답시 false
  *     시간초과시 null
  * 이 들어감
  */

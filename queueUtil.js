@@ -12,15 +12,15 @@ export const newQueueFromMap = map => {
             map.delete(entry[0]);
             return entry;
         },
-        toMap: procedure => {
-            const map = new Map();
+        toMap: manipulate => {
+            const newMap = new Map();
             while (!queue.isEmpty()) {
                 const [key, value] = queue.poll();
-                map.set(key, procedure ? procedure(value) : value);
+                newMap.set(key, manipulate ? manipulate(value) : value);
             }
-            return map;
+            return newMap;
         },
-        pipe: procedure => newQueueFromMap(queue.toMap(procedure)),
+        pipe: manipulate => newQueueFromMap(queue.toMap(manipulate)),
     };
 
     return queue;
