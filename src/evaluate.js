@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { listen } from './util/channel.js';
+import { subscribe, unsubscribe } from './util/channel.js';
 
 /**
  * @return Promise fulfilled with result.
@@ -17,21 +17,24 @@ export default (
 
     const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
-    let timeoutIdIn;
-    let timeoutIdOut;
-
     return new Promise((resolve, reject) => {
+        let timeoutIdIn;
+        let timeoutIdOut;
+        let subscriptionId;
+
         timeoutIdIn = setTimeout(() => {
+            if (subscriptionId) unsubscribe(subscriptionId);
             if (timeoutIdOut) clearTimeout(timeoutIdOut);
             resolve(Math.random() < 0.5);
         }, getRandomArbitrary(1_000, 4_000));
 
         timeoutIdOut = setTimeout(() => {
+            if (subscriptionId) unsubscribe(subscriptionId);
             if (timeoutIdIn) clearTimeout(timeoutIdIn);
             resolve(null);
         }, 3_000);
 
-        listen('TIMEOUT')(() => {
+        subscriptionId = subscribe('TIMEOUT')(() => {
             if (timeoutIdIn) clearTimeout(timeoutIdIn);
             if (timeoutIdOut) clearTimeout(timeoutIdOut);
             reject();

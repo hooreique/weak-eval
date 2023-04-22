@@ -1,13 +1,13 @@
 import { open, readdir } from 'node:fs/promises';
 import evaluate from './evaluate.js';
 import getPathPairQueue from './getPathPairQueue.js'
-import { destroy, emit } from './util/channel.js';
+import { broadcast, clear } from './util/channel.js';
 import peek from './util/peek.js';
 import repeat from './util/repeat.js';
 
 const complete = () => {
-    destroy('TIMEOUT');
-    emit('COMPLETE')();
+    clear('TIMEOUT');
+    broadcast('COMPLETE')();
 };
 
 export default (subject, testsDirPath) => {
