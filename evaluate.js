@@ -1,13 +1,14 @@
 import { spawn } from 'node:child_process';
 
-/*
- * 반환되는 프라미스에는
- *     정답시 true
- *     오답시 false
- *     시간초과시 null
- * 이 들어감
+/**
+ * @return Promise fulfilled with { testId, result }.
+ * result:
+ * true if the answer is correct,
+ * false if the answer is incorrect,
+ * null if time is out.
  */
 const evaluate = (
+    testId,
     [inFileHandlePromise, outFileHandlePromise],
     { classPath, className },
 ) => {
@@ -19,13 +20,13 @@ const evaluate = (
 
     return new Promise((resolve, reject) => {
         const timeoutId = setTimeout(() => {
-            resolve(Math.random() < 0.7);
-        }, getRandomArbitrary(1_000, 6_000));
+            resolve({ testId, result: Math.random() < 0.5 });
+        }, getRandomArbitrary(1_000, 4_000));
 
         setTimeout(() => {
             clearTimeout(timeoutId);
-            reject('랜덤하게 실패하기');
-        }, 5_000);
+            resolve({ testId, result: null });
+        }, 3_000);
     });
 
     // return inFileHandlePromise
