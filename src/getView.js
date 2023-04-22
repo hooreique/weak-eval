@@ -1,28 +1,28 @@
-import { open, readdir } from 'node:fs/promises';
+import { readdir } from 'node:fs/promises';
 import evaluate from './evaluate.js';
 import getPathPairQueue from './getPathPairQueue.js'
-import { destroy, emit } from './util/channel.js';
+import { broadcast, clear } from './util/channel.js';
 import peek from './util/peek.js';
 import repeat from './util/repeat.js';
 
 const complete = () => {
-    destroy('TIMEOUT');
-    emit('COMPLETE')();
+    clear('TIMEOUT');
+    broadcast('COMPLETE')();
 };
 
 export default (subject, testsDirPath) => {
-    const createView = (fileHandlePromisePairQueue, maxCapacity = 8) => {
-        const capacity = Math.min(maxCapacity, fileHandlePromisePairQueue.size());
+    const createView = (pathPairQueue, maxCapacity = 8) => {
+        const capacity = Math.min(maxCapacity, pathPairQueue.size());
         let cnt = 0;
 
         const view = new Map();
 
         const pollAndSet = () => {
-            if (fileHandlePromisePairQueue.isEmpty()) {
+            if (pathPairQueue.isEmpty()) {
                 if (++cnt === capacity) complete();
             } else {
-                const [testId, fileHandlePromisePair] = fileHandlePromisePairQueue.poll();
-                view.set(testId, evaluate(subject, fileHandlePromisePair)
+                const [testId, pathPair] = pathPairQueue.poll();
+                view.set(testId, evaluate(subject, pathPair)
                     .then(peek(pollAndSet))
                     .catch(err => null));
             }
@@ -34,8 +34,6 @@ export default (subject, testsDirPath) => {
     };
 
     return readdir(testsDirPath)
-        .then(basenames => getPathPairQueue(testsDirPath, basenames)
-            .pipe(pathPair => pathPair.map(path => open(path))))
-        .then(fileHandlePromisePairQueue =>
-            createView(fileHandlePromisePairQueue));
+        .then(basenames => getPathPairQueue(testsDirPath, basenames))
+        .then(pathPairQueue => createView(pathPairQueue));
 };

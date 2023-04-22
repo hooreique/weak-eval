@@ -1,10 +1,10 @@
-import { destroy, emit } from './util/channel.js';
+import { broadcast, clear } from './util/channel.js';
 
 const timer = {};
 
 const timeout = () => {
-    destroy('COMPLETE');
-    emit('TIMEOUT')();
+    clear('COMPLETE');
+    broadcast('TIMEOUT')();
 };
 
 export const setTimer = timeLimit => {
