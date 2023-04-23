@@ -1,8 +1,8 @@
 import { readdir } from 'node:fs/promises';
 import evaluate from './evaluate.js';
-import getPathPairQueue from './getPathPairQueue.js'
+import pathPairQueueFactory from './pathPairQueueFactory.js'
 import { channel } from './domain/channel.js';
-import { peek, repeat } from './util/pure.js';
+import { passer, repeater } from './util/pure.js';
 import { clear, publish } from './util/subscription.js';
 
 const onComplete = () => {
@@ -10,8 +10,8 @@ const onComplete = () => {
     publish(channel.COMPLETE)();
 };
 
-export default (subject, testsDirPath) => {
-    const createView = (pathPairQueue, maxCapacity = 8) => {
+export default (subject, testsDirPath) => () => {
+    const resultMapFactory = (maxCapacity = 8) => pathPairQueue => {
         const capacity = Math.min(maxCapacity, pathPairQueue.size());
         let cnt = 0;
 
@@ -23,17 +23,17 @@ export default (subject, testsDirPath) => {
             } else {
                 const [testId, pathPair] = pathPairQueue.poll();
                 view.set(testId, evaluate(subject, pathPair)
-                    .then(peek(pollAndSet))
+                    .then(passer(pollAndSet)())
                     .catch(result => result));
             }
         };
 
-        repeat(pollAndSet)(capacity);
+        repeater(capacity)(pollAndSet)();
 
         return view;
     };
 
     return readdir(testsDirPath)
-        .then(basenames => getPathPairQueue(testsDirPath, basenames))
-        .then(pathPairQueue => createView(pathPairQueue));
+        .then(pathPairQueueFactory(testsDirPath))
+        .then(resultMapFactory());
 };

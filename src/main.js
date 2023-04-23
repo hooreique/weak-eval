@@ -1,10 +1,10 @@
 import { join } from 'node:path';
 import compile from './compile.js';
-import getView from './getView.js';
-import render from './render.js';
-import { clearTimer, setTimer } from './timer.js';
+import viewFactory from './view.js';
+import rendererFactory from './render.js';
+import { clearTimer, timerSetter } from './timer.js';
 import { channels } from './domain/channel.js';
-import { peek } from './util/pure.js';
+import { passer } from './util/pure.js';
 
 export const initChannels = () => channels;
 
@@ -20,13 +20,13 @@ export const main = (dir, timeLimit = 10_000) => {
     };
 
     return compile({ outDirPath, codeFilePath })
-        .then(() => getView(subject, testsDirPath))
-        .then(peek(() => { setTimer(timeLimit) }))
-        .then(view => render(view, {
+        .then(viewFactory(subject, testsDirPath))
+        .then(passer(timerSetter(timeLimit))())
+        .then(rendererFactory({
             className,
             codeFilePath,
             outDirPath,
             testsDirPath,
         }))
-        .then(() => clearTimer());
+        .then(clearTimer);
 };
