@@ -2,9 +2,8 @@ import { readdir } from 'node:fs/promises';
 import evaluate from './evaluate.js';
 import getPathPairQueue from './getPathPairQueue.js'
 import { channel } from './domain/channel.js';
+import { peek, repeat } from './util/pure.js';
 import { clear, publish } from './util/subscription.js';
-import peek from './util/peek.js';
-import repeat from './util/repeat.js';
 
 const onComplete = () => {
     clear(channel.TIMEOUT);

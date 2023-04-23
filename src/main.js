@@ -4,11 +4,11 @@ import getView from './getView.js';
 import render from './render.js';
 import { clearTimer, setTimer } from './timer.js';
 import { channels } from './domain/channel.js';
-import peek from './util/peek.js';
+import { peek } from './util/pure.js';
 
 export const initChannels = () => channels;
 
-export const main = (dir, timeLimit = 3_000) => {
+export const main = (dir, timeLimit = 60_000) => {
     const className = 'Main';
     const codeFilePath = join(dir, 'solutions', className + '.java');
     const outDirPath = join(dir, 'out');
