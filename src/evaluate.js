@@ -54,7 +54,7 @@ export default (
     })
         .then(inFileHandle => {
 
-            const process = spawn('cmd.exe', [
+            const childProcess = spawn('cmd.exe', [
                 '/c',
                 'java',
                 '-Dfile.encoding=UTF-8',
@@ -65,12 +65,12 @@ export default (
 
             const inStream = inFileHandle.createReadStream();
 
-            inStream.pipe(process.stdin);
+            inStream.pipe(childProcess.stdin);
 
-            return { inFileHandle, process };
+            return { inFileHandle, childProcess };
         })
-        .then(({ inFileHandle, process }) => {
-            // TODO: outStream, process.stdout
+        .then(({ inFileHandle, childProcess }) => {
+            // TODO: outStream, childProcess.stdout
             //   두 스트림을 비교하는 구현
             //   스트림 데이터를 토크나이징 해서 한 토큰 한 토큰씩 비교하기
         });
