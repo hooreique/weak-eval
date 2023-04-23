@@ -11,7 +11,7 @@ const publishCompleteEvent = () => {
 };
 
 export default (subject, testsDirPath) => () => {
-    const resultMapFactory = (maxCapacity = 8) => pathPairQueue => {
+    const viewFactory = (maxCapacity = 8) => pathPairQueue => {
         const capacity = Math.min(maxCapacity, pathPairQueue.size());
         let cnt = 0;
 
@@ -36,5 +36,5 @@ export default (subject, testsDirPath) => () => {
 
     return readdir(testsDirPath)
         .then(pathPairQueueFactory(testsDirPath))
-        .then(resultMapFactory());
+        .then(viewFactory());
 };
