@@ -5,7 +5,7 @@ let timeoutId;
 
 const publishTimeoutEvent = () => {
     clear(channel.COMPLETE);
-    publish(channel.TIMEOUT)();
+    publish(channel.TIMEOUT);
 };
 
 export const timerSetter = timeLimit => () => {

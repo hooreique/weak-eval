@@ -39,7 +39,7 @@ export default (
             resolve(result.TIMEOVER);
         }, 700);
 
-        subscriptionId = subscribe(channel.TIMEOUT)(() => {
+        subscriptionId = subscribe(channel.TIMEOUT, () => {
             if (timeoutIdIn) clearTimeout(timeoutIdIn);
             if (timeoutIdOut) clearTimeout(timeoutIdOut);
             reject(result.TIMEOUT);

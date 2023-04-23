@@ -7,7 +7,7 @@ import { clear, publish } from './util/subscription.js';
 
 const publishCompleteEvent = () => {
     clear(channel.TIMEOUT);
-    publish(channel.COMPLETE)();
+    publish(channel.COMPLETE);
 };
 
 export default (subject, testsDirPath) => () => {

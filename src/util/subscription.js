@@ -11,7 +11,7 @@ const assertExisting = channel => {
     if (!getChannels()[channel]) throw new Error('Channel not found');
 };
 
-export const publish = channel => event => {
+export const publish = (channel, event) => {
     assertExisting(channel);
     console.log(channel.message);
     chennalToListeners.get(channel)
@@ -20,7 +20,7 @@ export const publish = channel => event => {
         });
 };
 
-export const subscribe = channel => callback => {
+export const subscribe = (channel, callback) => {
     assertExisting(channel);
     const subscriptionId = ++counter;
     let listeners;

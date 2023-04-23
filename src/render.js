@@ -24,7 +24,7 @@ export default (info, interval = 233) => view => {
             renderFrame().then(resolve);
         };
 
-        subscribe(channel.COMPLETE)(onEnd);
-        subscribe(channel.TIMEOUT)(onEnd);
+        subscribe(channel.COMPLETE, onEnd);
+        subscribe(channel.TIMEOUT, onEnd);
     });
 };
