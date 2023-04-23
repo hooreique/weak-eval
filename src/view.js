@@ -5,7 +5,7 @@ import { channel } from './domain/channel.js';
 import { passer, repeater } from './util/pure.js';
 import { clear, publish } from './util/subscription.js';
 
-const onComplete = () => {
+const publishCompleteEvent = () => {
     clear(channel.TIMEOUT);
     publish(channel.COMPLETE)();
 };
@@ -19,7 +19,7 @@ export default (subject, testsDirPath) => () => {
 
         const pollAndSet = () => {
             if (pathPairQueue.isEmpty()) {
-                if (++cnt === capacity) onComplete();
+                if (++cnt === capacity) publishCompleteEvent();
             } else {
                 const [testId, pathPair] = pathPairQueue.poll();
                 view.set(testId, evaluate(subject, pathPair)
