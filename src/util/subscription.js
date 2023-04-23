@@ -26,10 +26,10 @@ export const publish = channel => data => {
 export const subscribe = channel => callback => {
     assertExisting(channel);
     const subscriptionId = ++channelManager.counter;
-    let subscription;
-    channelManager.channelTable.set(channel, (subscription =
+    let listeners;
+    channelManager.channelTable.set(channel, (listeners =
         channelManager.channelTable.get(channel) || new Map()));
-    subscription.set(subscriptionId, callback);
+    listeners.set(subscriptionId, callback);
     channelManager.subscriptionIdToChannel.set(subscriptionId, channel);
     return subscriptionId;
 };
@@ -37,9 +37,9 @@ export const subscribe = channel => callback => {
 export const unsubscribe = subscriptionId => {
     const channel = channelManager.subscriptionIdToChannel.get(subscriptionId);
     if (!channel) return;
-    const map = channelManager.channelTable.get(channel);
-    if (!map) return;
-    return map.delete(subscriptionId);
+    const listeners = channelManager.channelTable.get(channel);
+    if (!listeners) return;
+    return listeners.delete(subscriptionId);
 };
 
 export const clear = channel => {
