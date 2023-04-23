@@ -1,47 +1,45 @@
 import { initChannels } from '../main.js';
 
-const channelManager = {
-    channels: undefined,
-    channelTable: new Map(),
-    subscriptionIdToChannel: new Map(),
-    counter: 0,
-};
+let channels;
+let counter = 0;
+const chennalToListeners = new Map();
+const subscriptionIdToChannel = new Map();
 
-const getChannels = () => channelManager.channels ||= initChannels();
+const getChannels = () => channels ||= initChannels();
 
 const assertExisting = channel => {
     if (!getChannels()[channel]) throw new Error('Channel not found');
 };
 
-export const publish = channel => data => {
+export const publish = channel => event => {
     assertExisting(channel);
     console.log(channel.message);
-    channelManager.channelTable.get(channel)
+    chennalToListeners.get(channel)
         ?.forEach(callback => {
-            callback(data);
+            callback(event);
         });
 };
 
 export const subscribe = channel => callback => {
     assertExisting(channel);
-    const subscriptionId = ++channelManager.counter;
+    const subscriptionId = ++counter;
     let listeners;
-    channelManager.channelTable.set(channel, (listeners =
-        channelManager.channelTable.get(channel) || new Map()));
+    chennalToListeners.set(channel, (listeners =
+        chennalToListeners.get(channel) || new Map()));
     listeners.set(subscriptionId, callback);
-    channelManager.subscriptionIdToChannel.set(subscriptionId, channel);
+    subscriptionIdToChannel.set(subscriptionId, channel);
     return subscriptionId;
 };
 
 export const unsubscribe = subscriptionId => {
-    const channel = channelManager.subscriptionIdToChannel.get(subscriptionId);
+    const channel = subscriptionIdToChannel.get(subscriptionId);
     if (!channel) return false;
-    const listeners = channelManager.channelTable.get(channel);
+    const listeners = chennalToListeners.get(channel);
     if (!listeners) return false;
     return listeners.delete(subscriptionId);
 };
 
 export const clear = channel => {
     assertExisting(channel);
-    channelManager.channelTable.get(channel)?.clear();
+    chennalToListeners.get(channel)?.clear();
 };
