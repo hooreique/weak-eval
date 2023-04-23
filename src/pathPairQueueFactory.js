@@ -13,7 +13,7 @@ const isValidPathPair = pathPair => pathPair &&
     isAbsolute(pathPair[0]) &&
     isAbsolute(pathPair[1]);
 
-export default (dirPath, basenames) => {
+export default dirPath => basenames => {
     const pathPairMap = new Map();
 
     basenames.forEach(basename => {

@@ -12,33 +12,33 @@ const closeStdio = (process, context) => {
 };
 
 export default (command, args, timeLimit = 5000) => {
-    const process = spawn('cmd.exe', [
+    const childProcess = spawn('cmd.exe', [
         '/c',
         command,
         ...args,
     ]);
 
-    process.stdout.on('data', data => console.log(data.toString()));
-    process.stderr.on('data', data => console.error(data.toString()));
+    childProcess.stdout.on('data', data => console.log(data.toString()));
+    childProcess.stderr.on('data', data => console.error(data.toString()));
 
     return new Promise((resolve, reject) => {
-        process.on('error', err => {
-            closeStdio(process, 'on error');
+        childProcess.on('error', err => {
+            closeStdio(childProcess, 'on error');
             reject(err);
         });
 
         let timeoutId;
 
-        process.on('spawn', () => {
+        childProcess.on('spawn', () => {
             timeoutId = setTimeout(() => {
-                closeStdio(process, 'on timeout');
-                process.kill();
+                closeStdio(childProcess, 'on timeout');
+                childProcess.kill();
                 reject('timeout');
             }, timeLimit);
         });
 
-        process.on('exit', (code, signal) => {
-            closeStdio(process, 'on exit');
+        childProcess.on('exit', (code, signal) => {
+            closeStdio(childProcess, 'on exit');
             if (timeoutId) clearTimeout(timeoutId);
             if (code === 0) resolve();
             else if (code !== null) reject(`exit code: ${code}`);

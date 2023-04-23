@@ -1,7 +1,8 @@
 import print from './print.js';
-import { subscribe } from './util/channel.js';
+import { channel } from './domain/channel.js';
+import { subscribe } from './util/subscription.js';
 
-export default (view, info, interval = 500) => {
+export default (info, interval = 233) => view => {
 
     const meta = {
         counter: 0,
@@ -18,12 +19,12 @@ export default (view, info, interval = 500) => {
             renderFrame();
         }, interval);
 
-        const end = () => {
+        const onEnd = () => {
             clearInterval(intervalId);
             renderFrame().then(resolve);
         };
 
-        subscribe('COMPLETE')(end);
-        subscribe('TIMEOUT')(end);
+        subscribe(channel.COMPLETE, onEnd);
+        subscribe(channel.TIMEOUT, onEnd);
     });
 };

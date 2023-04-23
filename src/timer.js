@@ -1,16 +1,17 @@
-import { broadcast, clear } from './util/channel.js';
+import { channel } from './domain/channel.js';
+import { clear, publish } from './util/subscription.js';
 
-const timer = {};
+let timeoutId;
 
-const timeout = () => {
-    clear('COMPLETE');
-    broadcast('TIMEOUT')();
+const publishTimeoutEvent = () => {
+    clear(channel.COMPLETE);
+    publish(channel.TIMEOUT);
 };
 
-export const setTimer = timeLimit => {
-    timer.timeoutId = setTimeout(timeout, timeLimit);
+export const timerSetter = timeLimit => () => {
+    timeoutId = setTimeout(publishTimeoutEvent, timeLimit);
 };
 
 export const clearTimer = () => {
-    if (timer.timeoutId) clearTimeout(timer.timeoutId);
+    if (timeoutId) clearTimeout(timeoutId);
 };
