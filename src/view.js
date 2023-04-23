@@ -20,12 +20,13 @@ export default (subject, testsDirPath) => () => {
         const pollAndSet = () => {
             if (pathPairQueue.isEmpty()) {
                 if (++cnt === capacity) publishCompleteEvent();
-            } else {
-                const [testId, pathPair] = pathPairQueue.poll();
-                view.set(testId, evaluate(subject, pathPair)
-                    .then(passer(pollAndSet)())
-                    .catch(result => result));
+                return;
             }
+
+            const [testId, pathPair] = pathPairQueue.poll();
+            view.set(testId, evaluate(subject, pathPair)
+                .then(passer(pollAndSet)())
+                .catch(result => result));
         };
 
         repeater(capacity)(pollAndSet)();
