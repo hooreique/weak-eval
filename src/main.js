@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import compile from './compile.js';
-import viewFactory from './view.js';
-import rendererFactory from './render.js';
+import consumer from './consumer.js';
+import producer from './producer.js';
 import { clearTimer, timerSetter } from './timer.js';
 import { passer } from './util/pure.js';
 
@@ -17,9 +17,9 @@ export default (dir, timeLimit = 10_000) => {
     };
 
     return compile({ outDirPath, codeFilePath })
-        .then(viewFactory(subject, testsDirPath))
+        .then(producer(subject, testsDirPath))
         .then(passer(timerSetter(timeLimit))())
-        .then(rendererFactory({
+        .then(consumer({
             className,
             codeFilePath,
             outDirPath,
