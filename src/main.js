@@ -8,7 +8,7 @@ import { peek } from './util/pure.js';
 
 export const initChannels = () => channels;
 
-export const main = (dir, timeLimit = 60_000) => {
+export const main = (dir, timeLimit = 10_000) => {
     const className = 'Main';
     const codeFilePath = join(dir, 'solutions', className + '.java');
     const outDirPath = join(dir, 'out');

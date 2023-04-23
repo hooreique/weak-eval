@@ -31,13 +31,13 @@ export default (
             if (subscriptionId) unsubscribe(subscriptionId);
             if (timeoutIdOut) clearTimeout(timeoutIdOut);
             resolve(Math.random() < 0.5 ? result.CORRECT : result.INCORRECT);
-        }, getRandomArbitrary(1_000, 4_000));
+        }, getRandomArbitrary(300, 900));
 
         timeoutIdOut = setTimeout(() => {
             if (subscriptionId) unsubscribe(subscriptionId);
             if (timeoutIdIn) clearTimeout(timeoutIdIn);
             resolve(result.TIMEOVER);
-        }, 3_000);
+        }, 700);
 
         subscriptionId = subscribe(channel.TIMEOUT)(() => {
             if (timeoutIdIn) clearTimeout(timeoutIdIn);

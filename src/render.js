@@ -2,7 +2,7 @@ import print from './print.js';
 import { channel } from './domain/channel.js';
 import { subscribe } from './util/subscription.js';
 
-export default (view, info, interval = 500) => {
+export default (view, info, interval = 233) => {
 
     const meta = {
         counter: 0,

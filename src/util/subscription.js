@@ -1,14 +1,13 @@
 import { initChannels } from '../main.js';
 
 const channelManager = {
+    channels: undefined,
     channelTable: new Map(),
     subscriptionIdToChannel: new Map(),
     counter: 0,
 };
 
-let channels;
-
-const getChannels = () => channels ||= initChannels();
+const getChannels = () => channelManager.channels ||= initChannels();
 
 const assertExisting = channel => {
     if (!getChannels()[channel]) throw new Error('Channel not found');
