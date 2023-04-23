@@ -1,19 +1,14 @@
-import { initChannels } from '../main.js';
 
-let channels;
 let counter = 0;
-const chennalToListeners = new Map();
+const chennalToListeners = new WeakMap();
 const subscriptionIdToChannel = new Map();
 
-const getChannels = () => channels ||= initChannels();
-
-const assertExisting = channel => {
-    if (!getChannels()[channel]) throw new Error('Channel not found');
-};
-
 export const publish = (channel, event) => {
-    assertExisting(channel);
-    console.log(channel.message);
+    console.log('An event "',
+        event || 'Default',
+        '" has emitted on channel "',
+        channel?.name || channel,
+        '"');
     chennalToListeners.get(channel)
         ?.forEach(callback => {
             callback(event);
@@ -21,7 +16,6 @@ export const publish = (channel, event) => {
 };
 
 export const subscribe = (channel, callback) => {
-    assertExisting(channel);
     const subscriptionId = ++counter;
     let listeners;
     chennalToListeners.set(channel, (listeners =
@@ -40,6 +34,5 @@ export const unsubscribe = subscriptionId => {
 };
 
 export const clear = channel => {
-    assertExisting(channel);
     chennalToListeners.get(channel)?.clear();
 };

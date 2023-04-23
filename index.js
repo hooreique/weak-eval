@@ -1,6 +1,6 @@
 import { isAbsolute } from 'node:path';
 import { createInterface } from 'node:readline/promises';
-import { main } from './src/main.js';
+import main from './src/main.js';
 
 const dir = process.argv[2];
 
