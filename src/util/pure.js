@@ -1,9 +1,9 @@
 
-export const peek = callback => value => {
-    callback();
+export const passer = callback => (...args) => value => {
+    callback(...args);
     return value;
 };
 
-export const repeat = callback => n => {
-    for (let i = 0; i < n; ++i) callback();
+export const repeater = n => callback => (...args) => {
+    for (let i = 0; i < n; ++i) callback(...args);
 };

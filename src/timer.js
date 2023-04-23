@@ -8,7 +8,7 @@ const onTimeout = () => {
     publish(channel.TIMEOUT)();
 };
 
-export const setTimer = timeLimit => {
+export const timerSetter = timeLimit => () => {
     timeoutId = setTimeout(onTimeout, timeLimit);
 };
 
