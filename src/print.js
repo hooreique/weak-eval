@@ -1,20 +1,17 @@
+import { results } from './domain/result.js';
 
-const VALUE = {}; // 임의의 상수
+const DUMMY_RESULT = {}; // 임의의 상수
 
 export default async (view, meta) => {
     console.log(`frame #${++meta.counter}`);
 
     const currentView = [];
 
-    for (let [testId, promise] of view) {
-        const value = await Promise.race([promise, VALUE]);
+    for (let [testId, resultPromise] of view) {
+        const result = await Promise.race([resultPromise, DUMMY_RESULT]);
 
-        currentView.push([testId, value === VALUE ?
-            '채점 중...' :
-            value === null ?
-                '시간 초과' :
-                value ?
-                    '정답입니다.' : '틀렸습니다.']);
+        currentView.push([testId, result === DUMMY_RESULT ? '채점 중...' :
+            results[result] ? result.message : '알 수 없음']);
     }
 
     console.log(currentView);
