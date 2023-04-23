@@ -6,7 +6,7 @@ import { subscribe, unsubscribe } from './util/subscription.js';
 
 /**
  * @return Promise fulfilled with result.
- * CORRECT true if the answer is correct,
+ * CORRECT if the answer is correct,
  * INCORRECT if the answer is incorrect,
  * TIMEOVER if time is over.
  * TIMEOUT if application timer rings.
