@@ -9,15 +9,15 @@ export default (info, interval = 233) => view => {
     };
 
     const renderFrame = () => {
-        // console.clear();
-        // console.log(info);
+        /*
+        console.clear();
+        console.log(info);
+        */
         return print(view, meta);
     };
 
     return new Promise(resolve => {
-        const intervalId = setInterval(() => {
-            renderFrame();
-        }, interval);
+        const intervalId = setInterval(renderFrame, interval);
 
         const onEnd = () => {
             clearInterval(intervalId);

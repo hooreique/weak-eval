@@ -1,5 +1,3 @@
-import { spawn } from 'node:child_process';
-import { open } from 'node:fs/promises';
 import { channel } from './domain/channel.js';
 import { result } from './domain/result.js';
 import { subscribe, unsubscribe } from './util/subscription.js';
@@ -11,15 +9,9 @@ import { subscribe, unsubscribe } from './util/subscription.js';
  * TIMEOVER if time is over.
  * TIMEOUT if application timer rings.
  */
-export default (
-    { classPath, className },
-    [inPath, outPath],
-) => {
+export default (subject, [inKey, outKey]) => {
 
     // /*
-    open(inPath).then(fileHandle => fileHandle.close());
-    open(outPath).then(fileHandle => fileHandle.close());
-
     const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
     return new Promise((resolve, reject) => {
