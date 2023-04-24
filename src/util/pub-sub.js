@@ -36,5 +36,6 @@ export const unsubscribe = subscriptionId => {
 };
 
 export const clear = channel => {
+    // TODO: Delete sub-id channel entry before
     chennalToListeners.get(channel)?.clear();
 };
