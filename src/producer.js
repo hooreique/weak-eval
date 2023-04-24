@@ -1,8 +1,9 @@
 import { readdir } from 'node:fs/promises';
 import evaluate from './evaluate.js';
-import pathPairQueueFactory from './pathPairQueueFactory.js'
+import keyTreeFactory from './keyTreeFactory.js';
+import toKeyPairQueue from './keyTransformer.js'
 import { channel } from './domain/channel.js';
-import { passer, repeater } from './util/pure.js';
+import { countDownLatch, passer, repeater } from './util/pure.js';
 import { clear, publish } from './util/subscription.js';
 
 const publishCompleteEvent = () => {
@@ -10,31 +11,33 @@ const publishCompleteEvent = () => {
     publish(channel.COMPLETE);
 };
 
-export default (subject, testsDirPath) => () => {
-    const viewFactory = (maxCapacity = 8) => pathPairQueue => {
-        const capacity = Math.min(maxCapacity, pathPairQueue.size());
-        let cnt = 0;
-
+export default (subject, keyDirPath) => () => {
+    const viewFactory = (maxCapacity = 8) => keyPairQueue => {
         const view = new Map();
 
+        const capacity = Math.min(maxCapacity, keyPairQueue.size());
+
+        const counter = countDownLatch(capacity)(publishCompleteEvent);
+
         const pollAndSet = () => {
-            if (pathPairQueue.isEmpty()) {
-                if (++cnt === capacity) publishCompleteEvent();
+            if (keyPairQueue.isEmpty()) {
+                counter.countDown();
                 return;
             }
 
-            const [testId, pathPair] = pathPairQueue.poll();
-            view.set(testId, evaluate(subject, pathPair)
-                .then(passer(pollAndSet)())
+            const [keyId, keyPair] = keyPairQueue.poll();
+            view.set(keyId, evaluate(subject, keyPair)
+                .then(passer(pollAndSet))
                 .catch(result => result));
         };
 
-        repeater(capacity)(pollAndSet)();
+        repeater(capacity)(pollAndSet);
 
         return view;
     };
 
-    return readdir(testsDirPath)
-        .then(pathPairQueueFactory(testsDirPath))
+    return readdir(keyDirPath)
+        .then(keyTreeFactory(keyDirPath))
+        .then(toKeyPairQueue)
         .then(viewFactory());
 };

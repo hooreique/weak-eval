@@ -1,5 +1,5 @@
 
-export const newQueueFromMap = map => {
+export const wrap = map => {
     const queue = {
         size: () => map.size,
         isEmpty: () => queue.size() === 0,
@@ -13,15 +13,6 @@ export const newQueueFromMap = map => {
             map.delete(entry[0]);
             return entry;
         },
-        toMap: manipulate => {
-            const newMap = new Map();
-            while (!queue.isEmpty()) {
-                const [key, value] = queue.poll();
-                newMap.set(key, manipulate ? manipulate(value) : value);
-            }
-            return newMap;
-        },
-        pipe: manipulate => newQueueFromMap(queue.toMap(manipulate)),
     };
 
     return queue;

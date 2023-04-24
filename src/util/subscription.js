@@ -1,6 +1,6 @@
 
 let counter = 0;
-const chennalToListeners = new WeakMap();
+const chennalToListeners = new Map();
 const subscriptionIdToChannel = new Map();
 
 export const publish = (channel, event) => {

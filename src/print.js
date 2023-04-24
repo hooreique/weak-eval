@@ -5,7 +5,7 @@ export default async (view, meta) => {
 
     const results = [];
 
-    for (let [testId, resultPromise] of view) {
+    for (const [testId, resultPromise] of view) {
         results.push([testId, getMessage(await Promise
             .race([resultPromise, result.PENDING]))]);
     }
