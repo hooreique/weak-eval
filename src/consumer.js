@@ -4,16 +4,12 @@ import { subscribe } from './util/subscription.js';
 
 export default (info, interval = 233) => view => {
 
-    const meta = {
-        counter: 0,
-    };
-
     const renderFrame = () => {
         /*
         console.clear();
         console.log(info);
         */
-        return print(view, meta);
+        return print(view);
     };
 
     return new Promise(resolve => {

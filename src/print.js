@@ -1,12 +1,14 @@
 import { getMessage, result } from './domain/result.js';
 
-export default async (view, meta) => {
-    console.log(`frame #${++meta.counter}`);
+let frameNumber = 0;
+
+export default async view => {
+    console.log(`frame #${++frameNumber}`);
 
     const results = [];
 
-    for (const [testId, resultPromise] of view) {
-        results.push([testId, getMessage(await Promise
+    for (const [keyId, resultPromise] of view) {
+        results.push([keyId, getMessage(await Promise
             .race([resultPromise, result.PENDING]))]);
     }
 
