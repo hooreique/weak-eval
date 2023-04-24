@@ -1,6 +1,6 @@
 import { channel } from './domain/channel.js';
 import { result } from './domain/result.js';
-import { subscribe, unsubscribe } from './util/subscription.js';
+import { subscribe, unsubscribe } from './util/pub-sub.js';
 
 /**
  * @return Promise fulfilled with result.
