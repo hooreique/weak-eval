@@ -30,7 +30,9 @@ export const unsubscribe = subscriptionId => {
     if (!channel) return false;
     const listeners = chennalToListeners.get(channel);
     if (!listeners) return false;
-    return listeners.delete(subscriptionId);
+    const deleted = listeners.delete(subscriptionId);
+    if (deleted) subscriptionIdToChannel.delete(subscriptionId);
+    return deleted;
 };
 
 export const clear = channel => {
