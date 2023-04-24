@@ -10,9 +10,9 @@ const isValid = keyPair => keyPair && Array.isArray(keyPair) &&
 
 const filter = keyPairMap => {
     /*
-    pathPairMap.set('foo', ['.in', '.ou']);
-    pathPairMap.set('bar', [undefined, '.out']);
-    pathPairMap.set('!!!', ['.in', '.out']);
+    keyPairMap.set('foo', ['.in', '.ou']);
+    keyPairMap.set('bar', [undefined, '.out']);
+    keyPairMap.set('!!!', ['.in', '.out']);
     */
     keyPairMap.forEach((keyPair, keyId, map) => {
         if (!isValid(keyPair)) map.delete(keyId);
