@@ -1,6 +1,6 @@
 import { isAbsolute } from 'node:path';
 import { pipe } from './util/pure.js';
-import { wrap } from './util/queueUtil.js';
+import { wrap } from './util/queue-util.js';
 
 const isValid = keyPair => keyPair && Array.isArray(keyPair) &&
     keyPair.length === 2 && keyPair[0] && keyPair[1] &&

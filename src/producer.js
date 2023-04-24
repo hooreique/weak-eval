@@ -1,10 +1,11 @@
 import { readdir } from 'node:fs/promises';
 import evaluate from './evaluate.js';
-import keyTreeFactory from './keyTreeFactory.js';
-import toKeyPairQueue from './keyTransformer.js'
+import keyTreeFactory from './key-tree-factory.js';
+import toKeyPairQueue from './key-transformer.js'
 import { channel } from './domain/channel.js';
-import { countDownLatch, passer, repeater } from './util/pure.js';
-import { clear, publish } from './util/subscription.js';
+import newCountDownLatch from './util/count-down-latch.js';
+import { passer, repeater } from './util/pure.js';
+import { clear, publish } from './util/pub-sub.js';
 
 const publishCompleteEvent = () => {
     clear(channel.TIMEOUT);
@@ -17,11 +18,11 @@ export default (subject, keyDirPath) => () => {
 
         const capacity = Math.min(maxCapacity, keyPairQueue.size());
 
-        const counter = countDownLatch(capacity)(publishCompleteEvent);
+        const countDownLatch = newCountDownLatch(capacity)(publishCompleteEvent);
 
         const pollAndSet = () => {
             if (keyPairQueue.isEmpty()) {
-                counter.countDown();
+                countDownLatch.countDown();
                 return;
             }
 

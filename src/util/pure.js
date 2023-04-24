@@ -1,13 +1,4 @@
 
-export const countDownLatch = initCount => callback => {
-    let count = initCount;
-    return {
-        countDown: (...args) => {
-            if (--count === 0) callback(...args);
-        },
-    };
-};
-
 export const passer = (callback, ...args) => value => {
     callback(...args);
     return value;

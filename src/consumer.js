@@ -1,6 +1,6 @@
 import print from './print.js';
 import { channel } from './domain/channel.js';
-import { subscribe } from './util/subscription.js';
+import { subscribe } from './util/pub-sub.js';
 
 export default (info, interval = 233) => view => {
 
