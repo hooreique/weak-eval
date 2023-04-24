@@ -17,3 +17,4 @@ Windows PC 에서 간단하게 코딩테스트 평가를 하기 위해 만들었
   - C++
   - Python
 - Config 분리하기
+- 애플리케이션 상, Stream 의 `data` 이벤트는 최초 한 번만 들어도 되므로 `.on()` 대신 `.once()` 쓰기
