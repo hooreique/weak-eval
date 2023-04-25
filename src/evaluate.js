@@ -1,3 +1,5 @@
+import comparator from './comparator.js';
+import run from './run.js';
 import { channel } from './domain/channel.js';
 import { result } from './domain/result.js';
 import { subscribe, unsubscribe } from './util/pub-sub.js';
@@ -8,10 +10,16 @@ import { subscribe, unsubscribe } from './util/pub-sub.js';
  * INCORRECT if the answer is incorrect,
  * TIMEOVER if time is over.
  * TIMEOUT if application timer rings.
+ * ERROR if run time error occurs.
  */
-export default (subject, [inKey, outKey]) => {
+export default (subject, [inKey, outKey], timeLimit = 2_000) => {
+    /* TO-BE
+    return run(subject, inKey, timeLimit)
+        .then(comparator(outKey))
+        .catch(() => result.UNKNOWN);
+    */
 
-    // /*
+    // /* AS-IS
     const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
     return new Promise((resolve, reject) => {
@@ -38,33 +46,4 @@ export default (subject, [inKey, outKey]) => {
         });
     });
     // */
-
-    /*
-    return open(inPath).then(inFileHandle => {
-        open(outPath).then(outFileHandle => {
-        });
-    })
-        .then(inFileHandle => {
-
-            const childProcess = spawn('cmd.exe', [
-                '/c',
-                'java',
-                '-Dfile.encoding=UTF-8',
-                '-cp',
-                classPath,
-                className,
-            ]);
-
-            const inStream = inFileHandle.createReadStream();
-
-            inStream.pipe(childProcess.stdin);
-
-            return { inFileHandle, childProcess };
-        })
-        .then(({ inFileHandle, childProcess }) => {
-            // TODO: outStream, childProcess.stdout
-            //   두 스트림을 비교하는 구현
-            //   스트림 데이터를 토크나이징 해서 한 토큰 한 토큰씩 비교하기
-        });
-    */
 };
