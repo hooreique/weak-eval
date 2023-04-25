@@ -1,6 +1,8 @@
-import { result } from './domain/result.js';
 import comparator from './comparator.js';
 import run from './run.js';
+import { channel } from './domain/channel.js';
+import { result } from './domain/result.js';
+import { subscribe, unsubscribe } from './util/pub-sub.js';
 
 /**
  * @return Promise fulfilled with result.
@@ -11,11 +13,13 @@ import run from './run.js';
  * ERROR if run time error occurs.
  */
 export default (subject, [inKey, outKey], timeLimit = 2_000) => {
+    /* TO-BE
     return run(subject, inKey, timeLimit)
         .then(comparator(outKey))
         .catch(() => result.UNKNOWN);
+    */
 
-    /*
+    // /* AS-IS
     const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
     return new Promise((resolve, reject) => {
@@ -41,5 +45,5 @@ export default (subject, [inKey, outKey], timeLimit = 2_000) => {
             reject(result.TIMEOUT);
         });
     });
-    */
+    // */
 };
