@@ -1,5 +1,5 @@
 Set-Variable -Name dir -Value $(Get-Location) `
-  && Start-Process `
-    -FilePath "node" `
-    -ArgumentList "index.js", $dir `
-    -WorkingDirectory "$($HOME)\source\weak-eval"
+    && Start-Process `
+        -FilePath "node" `
+        -ArgumentList "index.mjs", $dir `
+        -WorkingDirectory "$($HOME)\source\weak-eval"
