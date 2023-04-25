@@ -3,7 +3,7 @@
 # top-most EditorConfig file
 root = true
 
-[*.mjs]
+[*.{js,mjs}]
 indent_style = space
 indent_size = tab
 tab_width = 4
