@@ -1,2 +1,5 @@
 
-launch.json
+*
+
+!.gitignore
+!launch-from.json
