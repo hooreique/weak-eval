@@ -1,6 +1,6 @@
 
 let counter = 0;
-const chennalToListeners = new Map();
+const channelToListeners = new Map();
 const subscriptionIdToChannel = new Map();
 
 export const publish = (channel, event) => {
@@ -9,7 +9,7 @@ export const publish = (channel, event) => {
         '" has emitted on channel "',
         channel?.name || channel,
         '"');
-    chennalToListeners.get(channel)
+    channelToListeners.get(channel)
         ?.forEach(callback => {
             callback(event);
         });
@@ -18,8 +18,8 @@ export const publish = (channel, event) => {
 export const subscribe = (channel, callback) => {
     const subscriptionId = ++counter;
     let listeners;
-    chennalToListeners.set(channel, (listeners =
-        chennalToListeners.get(channel) || new Map()));
+    channelToListeners.set(channel, (listeners =
+        channelToListeners.get(channel) || new Map()));
     listeners.set(subscriptionId, callback);
     subscriptionIdToChannel.set(subscriptionId, channel);
     return subscriptionId;
@@ -28,7 +28,7 @@ export const subscribe = (channel, callback) => {
 export const unsubscribe = subscriptionId => {
     const channel = subscriptionIdToChannel.get(subscriptionId);
     if (!channel) return false;
-    const listeners = chennalToListeners.get(channel);
+    const listeners = channelToListeners.get(channel);
     if (!listeners) return false;
     const deleted = listeners.delete(subscriptionId);
     if (deleted) subscriptionIdToChannel.delete(subscriptionId);
@@ -36,6 +36,5 @@ export const unsubscribe = subscriptionId => {
 };
 
 export const clear = channel => {
-    // TODO: Delete sub-id channel entry before
-    chennalToListeners.get(channel)?.clear();
+    channelToListeners.get(channel)?.clear();
 };
