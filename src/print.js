@@ -1,18 +1,16 @@
-import { results } from './domain/result.js';
+import { getMessage, result } from './domain/result.js';
 
-const DUMMY_RESULT = {}; // 임의의 상수
+let frameNumber = 0;
 
-export default async (view, meta) => {
-    console.log(`frame #${++meta.counter}`);
+export default async view => {
+    console.log(`frame #${++frameNumber}`);
 
-    const currentView = [];
+    const results = [];
 
-    for (let [testId, resultPromise] of view) {
-        const result = await Promise.race([resultPromise, DUMMY_RESULT]);
-
-        currentView.push([testId, result === DUMMY_RESULT ? '채점 중...' :
-            results[result] ? result.message : '알 수 없음']);
+    for (const [keyId, resultPromise] of view) {
+        results.push([keyId, getMessage(await Promise
+            .race([resultPromise, result.PENDING]))]);
     }
 
-    console.log(currentView);
+    console.log(results);
 };

@@ -1,10 +1,10 @@
-import simpleCmdSpawn from './util/simpleCmdSpawn.js';
+import simpleCmdSpawn from './util/simple-cmd-spawn.js';
 
-export default ({ outDirPath, codeFilePath }) =>
+export default ({ classPath, codeFilePath }) =>
     simpleCmdSpawn('javac', [
         '-encoding',
         'UTF-8',
         '-d',
-        outDirPath,
+        classPath,
         codeFilePath,
     ]);
