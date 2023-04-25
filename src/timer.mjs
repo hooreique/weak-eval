@@ -1,5 +1,5 @@
-import { channel } from './domain/channel.js';
-import { clear, publish } from './util/pub-sub.js';
+import { channel } from './domain/channel.mjs';
+import { clear, publish } from './util/pub-sub.mjs';
 
 let timeoutId;
 

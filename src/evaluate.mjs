@@ -1,8 +1,8 @@
-import comparator from './comparator.js';
-import run from './run.js';
-import { channel } from './domain/channel.js';
-import { result } from './domain/result.js';
-import { subscribe, unsubscribe } from './util/pub-sub.js';
+import comparator from './comparator.mjs';
+import run from './run.mjs';
+import { channel } from './domain/channel.mjs';
+import { result } from './domain/result.mjs';
+import { subscribe, unsubscribe } from './util/pub-sub.mjs';
 
 /**
  * @return Promise fulfilled with result.

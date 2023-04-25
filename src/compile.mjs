@@ -1,4 +1,4 @@
-import simpleCmdSpawn from './util/simple-cmd-spawn.js';
+import simpleCmdSpawn from './util/simple-cmd-spawn.mjs';
 
 export default ({ classPath, codeFilePath }) =>
     simpleCmdSpawn('javac', [

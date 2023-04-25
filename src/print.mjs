@@ -1,4 +1,4 @@
-import { getMessage, result } from './domain/result.js';
+import { getMessage, result } from './domain/result.mjs';
 
 let frameNumber = 0;
 

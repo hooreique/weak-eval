@@ -6,7 +6,7 @@
       "request": "launch",
       "name": "test-name",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\index.js",
+      "program": "${workspaceFolder}\\index.mjs",
       "args": ["${workspaceFolder}\\workbench\\test-folder"],
       "console": "integratedTerminal"
     }

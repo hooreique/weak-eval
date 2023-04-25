@@ -1,9 +1,9 @@
 import { join } from 'node:path';
-import compile from './compile.js';
-import consumer from './consumer.js';
-import producer from './producer.js';
-import { clearTimer, timerSetter } from './timer.js';
-import { passer } from './util/pure.js';
+import compile from './compile.mjs';
+import consumer from './consumer.mjs';
+import producer from './producer.mjs';
+import { clearTimer, timerSetter } from './timer.mjs';
+import { passer } from './util/pure.mjs';
 
 export default (dir, timeLimit = 10_000) => {
     const className = 'Main';

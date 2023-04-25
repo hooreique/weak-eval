@@ -1,8 +1,8 @@
-import evaluate from './evaluate.js';
-import { channel } from './domain/channel.js';
-import newCountDownLatch from './util/count-down-latch.js';
-import { passer, repeater } from './util/pure.js';
-import { clear, publish } from './util/pub-sub.js';
+import evaluate from './evaluate.mjs';
+import { channel } from './domain/channel.mjs';
+import newCountDownLatch from './util/count-down-latch.mjs';
+import { passer, repeater } from './util/pure.mjs';
+import { clear, publish } from './util/pub-sub.mjs';
 
 const publishCompleteEvent = () => {
     clear(channel.TIMEOUT);
