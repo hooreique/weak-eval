@@ -11,6 +11,7 @@ import { subscribe, unsubscribe } from './util/pub-sub.mjs';
  * TIMEOVER if time is over.
  * TIMEOUT if application timer rings.
  * ERROR if run time error occurs.
+ * UNKNOWN default.
  */
 export default (subject, [inKey, outKey], timeLimit = 2_000) => {
     /* TO-BE
