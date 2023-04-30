@@ -1,25 +1,28 @@
+import { log } from 'node:console';
 
 let counter = 0;
 const channelToListeners = new Map();
 const subscriptionIdToChannel = new Map();
 
 export const publish = (channel, event) => {
-    console.log('An event "',
+    log(
+        'An event',
         event || 'Default',
-        '" has emitted on channel "',
-        channel?.name || channel,
-        '"');
-    channelToListeners.get(channel)
-        ?.forEach(callback => {
-            callback(event);
-        });
+        'has emitted on channel',
+        channel?.name || channel
+    );
+    channelToListeners.get(channel)?.forEach(callback => {
+        callback(event);
+    });
 };
 
 export const subscribe = (channel, callback) => {
     const subscriptionId = ++counter;
     let listeners;
-    channelToListeners.set(channel, (listeners =
-        channelToListeners.get(channel) || new Map()));
+    channelToListeners.set(
+        channel,
+        (listeners = channelToListeners.get(channel) || new Map())
+    );
     listeners.set(subscriptionId, callback);
     subscriptionIdToChannel.set(subscriptionId, channel);
     return subscriptionId;
