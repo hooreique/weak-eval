@@ -1,7 +1,7 @@
 const isEmpty = info => !info || Object.keys(info).length === 0;
 
 export default info => {
-    if (isEmpty(info)) return ['\x1b[90m%s', 'Info not available'];
+    if (isEmpty(info)) return ['\x1b[90m%s\n', 'Info not available'];
 
     const formats = [];
     const args = [];
