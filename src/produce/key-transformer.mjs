@@ -1,6 +1,6 @@
 import { isAbsolute } from 'node:path';
-import { pipe } from './util/pure.mjs';
-import { wrap } from './util/queue.mjs';
+import { pipe } from '../util/pure.mjs';
+import { wrap } from '../util/queue.mjs';
 
 const isValid = keyPair =>
     keyPair &&

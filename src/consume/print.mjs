@@ -1,5 +1,5 @@
 import { clear, log } from 'node:console';
-import { result } from './domain/result.mjs';
+import { result } from '../domain/result.mjs';
 
 const BLANK = Symbol('');
 

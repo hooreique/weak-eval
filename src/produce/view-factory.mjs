@@ -1,7 +1,7 @@
-import evaluate from './evaluate.mjs';
-import { newCountDownLatch } from './util/count-down-latch.mjs';
-import { passer, repeater } from './util/pure.mjs';
-import { publish } from './util/single-pub-sub.mjs';
+import evaluate from './evaluator.mjs';
+import { newCountDownLatch } from '../util/count-down-latch.mjs';
+import { passer, repeater } from '../util/pure.mjs';
+import { publish } from '../util/single-pub-sub.mjs';
 
 export default (runOption, maxCapacity = 8) =>
     keyPairQueue => {

@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
-import { newAnswer } from './util/answer.mjs';
+import { newAnswer } from '../../util/answer.mjs';
 
 export default ({ command, args, timeLimit }, inKey) =>
     () => {

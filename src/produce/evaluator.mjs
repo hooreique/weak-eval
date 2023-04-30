@@ -1,5 +1,5 @@
-import resultFactory from './result-factory.mjs';
-import answerFactory from './answer-factory.mjs';
+import answerFactory from './evaluate/answer-factory.mjs';
+import resultFactory from './evaluate/result-factory.mjs';
 
 export default (runOption, [inKey, outKey]) =>
     Promise.resolve()
