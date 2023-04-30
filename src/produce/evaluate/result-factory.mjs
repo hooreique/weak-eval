@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { result } from './domain/result.mjs';
+import { result } from '../../domain/result.mjs';
 
 export default outKey =>
     ({ answer, code, signal }) =>

@@ -1,5 +1,5 @@
 import print from './print.mjs';
-import { result } from './domain/result.mjs';
+import { result } from '../domain/result.mjs';
 
 export default async (view, formattedInfo) => {
     const results = [];

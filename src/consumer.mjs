@@ -1,5 +1,5 @@
-import format from './info-display.mjs';
-import render from './render.mjs';
+import format from './consume/info-display.mjs';
+import render from './consume/render.mjs';
 import { subscribe } from './util/single-pub-sub.mjs';
 
 export default (info, frameInterval) => view => {
