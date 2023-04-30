@@ -1,26 +1,26 @@
+import { clear, log } from 'node:console';
 import print from './print.mjs';
 import { channel } from './domain/channel.mjs';
 import { subscribe } from './util/pub-sub.mjs';
 
-export default (info, interval = 233) => view => {
-
-    const renderFrame = () => {
-        /*
-        console.clear();
-        console.log(info);
-        */
-        return print(view);
-    };
-
-    return new Promise(resolve => {
-        const intervalId = setInterval(renderFrame, interval);
-
-        const onEnd = () => {
-            clearInterval(intervalId);
-            renderFrame().then(resolve);
+export default (info, interval = 233) =>
+    view => {
+        const renderFrame = () => {
+            /*
+            clear();
+            log(info);
+            */
+            return print(view);
         };
 
-        subscribe(channel.COMPLETE, onEnd);
-        subscribe(channel.TIMEOUT, onEnd);
-    });
-};
+        return new Promise(resolve => {
+            const intervalId = setInterval(renderFrame, interval);
+
+            subscribe(channel.COMPLETE, () =>
+                setImmediate(() => {
+                    clearInterval(intervalId);
+                    renderFrame().then(resolve);
+                })
+            );
+        });
+    };
