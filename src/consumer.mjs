@@ -1,7 +1,6 @@
 import format from './info-display.mjs';
 import render from './render.mjs';
-import { channel } from './domain/channel.mjs';
-import { subscribe } from './util/pub-sub.mjs';
+import { subscribe } from './util/single-pub-sub.mjs';
 
 export default (info, frameInterval) => view => {
     const formattedInfo = format(info);
@@ -12,7 +11,7 @@ export default (info, frameInterval) => view => {
     );
 
     return new Promise(resolve => {
-        subscribe(channel.COMPLETE, () => {
+        subscribe(() => {
             clearInterval(intervalId);
             setImmediate(() => render(view, formattedInfo).then(resolve));
         });
