@@ -1,5 +1,4 @@
-
-export default initCount => callback => {
+export const newCountDownLatch = initCount => callback => {
     let count = initCount;
     return {
         countDown: (...args) => {

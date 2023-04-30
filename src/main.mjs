@@ -1,11 +1,9 @@
 import { join } from 'node:path';
-import compile from './compile.mjs';
+import compiler from './compiler.mjs';
 import consumer from './consumer.mjs';
 import producer from './producer.mjs';
-import { clearTimer, timerSetter } from './timer.mjs';
-import { passer } from './util/pure.mjs';
 
-export default (dir, timeLimit = 10_000) => {
+export default dir => {
     const className = 'Main';
     const classPath = join(dir, 'out');
     const keyDirPath = join(dir, 'tests');
@@ -14,16 +12,21 @@ export default (dir, timeLimit = 10_000) => {
     const subject = {
         className,
         classPath,
+        timeLimit: 3_000,
     };
 
-    return compile({ classPath, codeFilePath })
-        .then(producer(subject, keyDirPath))
-        .then(passer(timerSetter(timeLimit)))
-        .then(consumer({
-            className,
-            classPath,
-            keyDirPath,
-            codeFilePath,
-        }))
-        .then(clearTimer);
+    return Promise.resolve()
+        .then(compiler({ classPath, codeFilePath }))
+        .then(producer(subject, keyDirPath, 8))
+        .then(
+            consumer(
+                {
+                    className,
+                    classPath,
+                    keyDirPath,
+                    codeFilePath,
+                },
+                233
+            )
+        );
 };

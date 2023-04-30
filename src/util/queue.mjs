@@ -1,4 +1,3 @@
-
 export const wrap = map => {
     const queue = {
         size: () => map.size,
