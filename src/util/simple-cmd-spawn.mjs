@@ -1,48 +1,24 @@
 import { spawn } from 'node:child_process';
-
-const closeStdio = (process, context) => {
-    try {
-        process.stdin.end();
-        process.stdout.end();
-        process.stderr.end();
-    } catch (err) {
-        console.error(err);
-        console.log('Error occurred during closing stdio:', context);
-    }
-};
+import { once } from 'node:events';
+import { stdout, stderr } from 'node:process';
+import { throwNewError } from './error.mjs';
 
 export default (command, args, timeLimit = 5000) => {
-    const childProcess = spawn('cmd.exe', [
-        '/c',
-        command,
-        ...args,
-    ]);
+    const subProcess = spawn('cmd.exe', ['/c', command, ...args]);
 
-    childProcess.stdout.on('data', data => console.log(data.toString()));
-    childProcess.stderr.on('data', data => console.error(data.toString()));
+    subProcess.stdout.pipe(stdout);
+    subProcess.stderr.pipe(stderr);
 
-    return new Promise((resolve, reject) => {
-        childProcess.on('error', err => {
-            closeStdio(childProcess, 'on error');
-            reject(err);
-        });
+    let timeoutId;
 
-        let timeoutId;
+    once(subProcess, 'spawn').then(() => {
+        timeoutId = setTimeout(() => {
+            subProcess.kill();
+        }, timeLimit);
+    });
 
-        childProcess.on('spawn', () => {
-            timeoutId = setTimeout(() => {
-                closeStdio(childProcess, 'on timeout');
-                childProcess.kill();
-                reject('timeout');
-            }, timeLimit);
-        });
-
-        childProcess.on('exit', (code, signal) => {
-            closeStdio(childProcess, 'on exit');
-            if (timeoutId) clearTimeout(timeoutId);
-            if (code === 0) resolve();
-            else if (code !== null) reject(`exit code: ${code}`);
-            else reject(`signal: ${signal}`);
-        });
+    return once(subProcess, 'close').then(([code, signal]) => {
+        if (timeoutId) clearTimeout(timeoutId);
+        if (code !== 0) throwNewError({ code, signal });
     });
 };
