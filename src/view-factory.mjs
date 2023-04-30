@@ -1,12 +1,7 @@
 import evaluate from './evaluate.mjs';
-import { channel } from './domain/channel.mjs';
 import { newCountDownLatch } from './util/count-down-latch.mjs';
 import { passer, repeater } from './util/pure.mjs';
-import { publish } from './util/pub-sub.mjs';
-
-const publishCompleteEvent = () => {
-    publish(channel.COMPLETE);
-};
+import { publish } from './util/single-pub-sub.mjs';
 
 export default (runOption, maxCapacity = 8) =>
     keyPairQueue => {
@@ -14,8 +9,7 @@ export default (runOption, maxCapacity = 8) =>
 
         const capacity = Math.min(maxCapacity, keyPairQueue.size());
 
-        const countDownLatch =
-            newCountDownLatch(capacity)(publishCompleteEvent);
+        const countDownLatch = newCountDownLatch(capacity)(publish);
 
         const pollAndSet = () => {
             if (keyPairQueue.isEmpty()) {
