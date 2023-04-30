@@ -16,12 +16,11 @@ export default (info, interval = 233) =>
         return new Promise(resolve => {
             const intervalId = setInterval(renderFrame, interval);
 
-            const onEnd = () => {
-                clearInterval(intervalId);
-                renderFrame().then(resolve);
-            };
-
-            subscribe(channel.COMPLETE, onEnd);
-            subscribe(channel.TIMEOUT, onEnd);
+            subscribe(channel.COMPLETE, () =>
+                setImmediate(() => {
+                    clearInterval(intervalId);
+                    renderFrame().then(resolve);
+                })
+            );
         });
     };

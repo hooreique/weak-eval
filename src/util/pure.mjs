@@ -6,8 +6,8 @@ export const passer =
     };
 
 export const pipe =
-    arg =>
     (...fs) =>
+    arg =>
         fs.reduce((v, f) => f(v), arg);
 
 export const repeater =
