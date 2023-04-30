@@ -1,0 +1,20 @@
+{
+  "java": {
+    "codeName": "Main",
+    "codeExt": ".java",
+    "command": {
+      "compile": "javac",
+      "run": "java"
+    },
+    "args": {
+      "compile": ["-encoding", "UTF-8", "-d", "$OUT_DIR_PATH", "$CODE_PATH"],
+      "run": ["-Dfile.encoding=UTF-8", "-cp", "$OUT_DIR_PATH", "$CODE_NAME"]
+    },
+    "timeLimit": 3000
+  },
+  "codeDirName": "solutions",
+  "outDirName": "out",
+  "keyDirName": "tests",
+  "maxCapacity": 8,
+  "frameInterval": 233
+}

@@ -1,10 +1,10 @@
 import { readdir } from 'node:fs/promises';
-import keyTreeFactory from './key-tree-factory.mjs';
-import toKeyPairQueue from './key-transformer.mjs';
-import viewFactory from './view-factory.mjs';
+import toKeyPairQueue from './produce/key-transformer.mjs';
+import keyTreeFactory from './produce/key-tree-factory.mjs';
+import viewFactory from './produce/view-factory.mjs';
 
-export default (subject, keyDirPath, maxCapacity) => () =>
+export default (runOption, keyDirPath, maxCapacity) => () =>
     readdir(keyDirPath)
         .then(keyTreeFactory(keyDirPath))
         .then(toKeyPairQueue)
-        .then(viewFactory(subject, maxCapacity));
+        .then(viewFactory(runOption, maxCapacity));

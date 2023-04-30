@@ -5,8 +5,6 @@ const TIMEOUT = { message: '시간 초과' };
 const ERROR = { message: '런타임 에러' };
 const UNKNOWN = { message: '알 수 없음' };
 
-export const getMessage = result => result?.message || UNKNOWN.message;
-
 export const result = {
     PENDING,
     CORRECT,
