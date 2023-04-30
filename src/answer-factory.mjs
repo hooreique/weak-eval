@@ -3,13 +3,9 @@ import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
 import { newAnswer } from './util/answer.mjs';
 
-export default ({ classPath, className, timeLimit }, inKey) =>
+export default ({ command, args, timeLimit }, inKey) =>
     () => {
-        const run = spawn(
-            'java',
-            ['-Dfile.encoding=UTF-8', '-cp', classPath, className],
-            { timeout: timeLimit }
-        );
+        const run = spawn(command, args, { timeout: timeLimit });
 
         run?.on('error', err => run?.kill());
         run?.stdin?.on('error', err => run?.kill());

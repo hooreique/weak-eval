@@ -16,11 +16,9 @@ export default (info, interval = 233) =>
         return new Promise(resolve => {
             const intervalId = setInterval(renderFrame, interval);
 
-            subscribe(channel.COMPLETE, () =>
-                setImmediate(() => {
-                    clearInterval(intervalId);
-                    renderFrame().then(resolve);
-                })
-            );
+            subscribe(channel.COMPLETE, () => {
+                clearInterval(intervalId);
+                setImmediate(() => renderFrame().then(resolve));
+            });
         });
     };

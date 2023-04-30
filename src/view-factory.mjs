@@ -8,7 +8,7 @@ const publishCompleteEvent = () => {
     publish(channel.COMPLETE);
 };
 
-export default (subject, maxCapacity = 8) =>
+export default (runOption, maxCapacity = 8) =>
     keyPairQueue => {
         const view = new Map();
 
@@ -26,7 +26,7 @@ export default (subject, maxCapacity = 8) =>
             const [keyId, keyPair] = keyPairQueue.poll();
             view.set(
                 keyId,
-                evaluate(subject, keyPair).then(passer(pollAndSet))
+                evaluate(runOption, keyPair).then(passer(pollAndSet))
             );
         };
 
