@@ -10,8 +10,15 @@ export const pipe =
     arg =>
         fs.reduce((v, f) => f(v), arg);
 
-export const repeater =
-    n =>
+export const repeatWithInterval =
+    (n, interval) =>
     (callback, ...args) => {
-        for (let i = n; i > 0; --i) callback(...args);
+        if (n <= 0) return;
+
+        callback(...args);
+
+        if (n > 1)
+            setTimeout(() => {
+                repeatWithInterval(n - 1, interval)(callback, ...args);
+            }, interval);
     };

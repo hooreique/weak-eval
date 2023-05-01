@@ -1,6 +1,7 @@
 import evaluate from './evaluator.mjs';
 import { newCountDownLatch } from '../util/count-down-latch.mjs';
-import { passer, repeater } from '../util/pure.mjs';
+import { throwNewError } from '../util/error.mjs';
+import { passer, repeatWithInterval } from '../util/pure.mjs';
 import { publish } from '../util/single-pub-sub.mjs';
 
 export default (runOption, maxCapacity = 8) =>
@@ -8,6 +9,9 @@ export default (runOption, maxCapacity = 8) =>
         const view = new Map();
 
         const capacity = Math.min(maxCapacity, keyPairQueue.size());
+
+        if (capacity === 0)
+            throwNewError('Zero Capacity; Check the max-capacity or the keys.');
 
         const countDownLatch = newCountDownLatch(capacity)(publish);
 
@@ -24,7 +28,10 @@ export default (runOption, maxCapacity = 8) =>
             );
         };
 
-        repeater(capacity)(pollAndSet);
+        repeatWithInterval(
+            capacity,
+            runOption.timeLimit / capacity
+        )(pollAndSet);
 
         return view;
     };
