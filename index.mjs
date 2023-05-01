@@ -26,7 +26,9 @@ const pause = () => {
         output: stdout,
     });
 
-    rl.question('Press enter...').then(answer => rl.close());
+    rl.question('Press enter...')
+        .catch(() => {})
+        .finally(() => rl.close());
 };
 
 Promise.resolve()
