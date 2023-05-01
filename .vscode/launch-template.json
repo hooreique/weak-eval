@@ -4,10 +4,10 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "test-name",
+      "name": "### TEST_NAME ###",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\index.mjs",
-      "args": ["${workspaceFolder}\\workbench\\test-folder"],
+      "args": ["${workspaceFolder}\\workbench\\### TEST_ROOT ###"],
       "console": "integratedTerminal"
     }
   ]

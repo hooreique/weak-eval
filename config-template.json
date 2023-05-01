@@ -3,8 +3,8 @@
   "outDirName": "out",
   "keyDirName": "tests",
   "keyOrderAsc": false,
-  "maxCapacity": 8,
-  "frameInterval": 139,
+  "maxCapacity": 4,
+  "frameInterval": 300,
   "columnCount": 4,
   "timeLimit": {
     "java": 2000

@@ -2,4 +2,4 @@
 *
 
 !.gitignore
-!launch-from.json
+!launch-*.json

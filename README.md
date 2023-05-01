@@ -15,4 +15,3 @@ Windows PC 에서 간단하게 코딩테스트 평가를 하기 위해 만들었
   - C++
   - Python
 - 파일로 결과 리포트하기
-- .gitignore 정리하기
