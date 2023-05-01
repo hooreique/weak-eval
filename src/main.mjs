@@ -6,11 +6,14 @@ export default ({
     compileOption,
     runOption,
     keyDirPath,
+    keyOrderAsc,
     maxCapacity,
-    info,
     frameInterval,
-}) =>
-    Promise.resolve()
+    columnCount,
+    info,
+}) => {
+    return Promise.resolve()
         .then(compiler(compileOption))
-        .then(producer(runOption, keyDirPath, maxCapacity))
-        .then(consumer(info, frameInterval));
+        .then(producer(runOption, keyDirPath, keyOrderAsc, maxCapacity))
+        .then(consumer(info, frameInterval, columnCount));
+};

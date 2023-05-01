@@ -1,11 +1,15 @@
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
-import { newAnswer } from '../../util/answer.mjs';
+import { newAnswer } from '../../util/string.mjs';
 
 export default ({ command, args, timeLimit }, inKey) =>
     () => {
-        const run = spawn(command, args, { timeout: timeLimit });
+        const input = readFileSync(inKey);
+
+        const answer = newAnswer();
+
+        const run = spawn(command, args, { timeout: timeLimit * 2 });
 
         run?.on('error', err => run?.kill());
         run?.stdin?.on('error', err => run?.kill());
@@ -18,15 +22,16 @@ export default ({ command, args, timeLimit }, inKey) =>
             run?.stderr?.end();
         });
 
-        const answer = newAnswer();
-        run?.stdout?.on('data', data => answer.push(data));
+        run?.stdout?.on('data', data => {
+            answer.push(data);
+        });
 
-        run?.stdin?.write(readFileSync(inKey));
+        run?.stdin?.write(input);
         run?.stdin?.end();
 
         return once(run, 'close').then(([code, signal]) => ({
-            answer,
             code,
             signal,
+            answer,
         }));
     };

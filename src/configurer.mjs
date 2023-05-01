@@ -1,41 +1,95 @@
 import { join } from 'node:path';
+import { throwNewError } from './util/error.mjs';
+
+const staticConfig = {
+    runnerBaseDir: '.\\src\\language',
+    language: {
+        java: {
+            code: 'Main',
+            runner: 'MainRunner',
+            ext: '.java',
+            command: {
+                compile: 'javac',
+                run: 'java',
+            },
+            defaultTimeLimit: 2_000,
+        },
+    },
+};
+
+const configurer = lang => {
+    const runnerDirPath = join(staticConfig.runnerBaseDir, lang);
+
+    return {
+        // javac -encoding UTF-8 -d out -cp src;sol src/MainRunner.java
+        getCompileArgs: (outDirPath, codeDirPath) => [
+            '-encoding',
+            'UTF-8',
+            '-d',
+            outDirPath,
+            '-cp',
+            [runnerDirPath, codeDirPath].join(';'),
+            join(
+                runnerDirPath,
+                staticConfig.language[lang].runner +
+                    staticConfig.language[lang].ext
+            ),
+        ],
+        // java -Dfile.encoding=UTF-8 -cp out MainRunner
+        getRunArgs: outDirPath => [
+            '-Dfile.encoding=UTF-8',
+            '-cp',
+            outDirPath,
+            staticConfig.language[lang].runner,
+        ],
+    };
+};
+
+const supportedLanguages = new Set(['java']);
+const isSupported = lang => supportedLanguages.has(lang);
 
 export default (dir, config, lang) => () => {
-    const codeName = config[lang].codeName;
-    const outDirPath = join(dir, config.outDirName);
-    const keyDirPath = join(dir, config.keyDirName);
-    const codePath = join(
-        dir,
-        config.codeDirName,
-        codeName + config[lang].codeExt
-    );
+    if (!isSupported(lang))
+        throwNewError(`Currently ${lang} is not supported.`);
 
-    const compileArgs = config[lang].args.compile;
-    compileArgs[compileArgs.lastIndexOf('$OUT_DIR_PATH')] = outDirPath;
-    compileArgs[compileArgs.lastIndexOf('$CODE_PATH')] = codePath;
+    const codeDirPath = join(dir, config?.codeDirName || 'solutions');
+    const outDirPath = join(dir, config?.outDirName || 'out');
+    const keyDirPath = join(dir, config?.keyDirName || 'tests');
+    const keyOrderAsc = config?.keyOrderAsc ? true : false;
+    const maxCapacity = config?.maxCapacity || 4;
+    const frameInterval = config?.frameInterval || 500;
+    const columnCount = config?.columnCount || 4;
+    const timeLimit =
+        config?.timeLimit?.[lang] ||
+        staticConfig.language[java].defaultTimeLimit;
 
-    const runArgs = config[lang].args.run;
-    runArgs[runArgs.lastIndexOf('$OUT_DIR_PATH')] = outDirPath;
-    runArgs[runArgs.lastIndexOf('$CODE_NAME')] = codeName;
+    const langConf = configurer(lang);
+
+    const compileCommand = staticConfig.language[lang].command.compile;
+    const compileArgs = langConf.getCompileArgs(outDirPath, codeDirPath);
+    const runCommand = staticConfig.language[lang].command.run;
+    const runArgs = langConf.getRunArgs(outDirPath);
 
     return {
         compileOption: {
-            command: config[lang].command.compile,
+            command: compileCommand,
             args: compileArgs,
         },
         runOption: {
-            command: config[lang].command.run,
+            command: runCommand,
             args: runArgs,
-            timeLimit: config[lang].timeLimit,
+            timeLimit,
         },
         keyDirPath,
-        maxCapacity: config.maxCapacity,
+        keyOrderAsc,
+        maxCapacity,
+        frameInterval,
+        columnCount,
         info: {
-            compile: `${config[lang].command.compile} ${compileArgs.join(' ')}`,
-            run: `${config[lang].command.run} ${runArgs.join(' ')}`,
-            timeLimit: `${config[lang].timeLimit}ms`,
-            keyDirPath,
+            Compile: [compileCommand, ...compileArgs].join(' '),
+            Run: [runCommand, ...runArgs].join(' '),
+            'Time limit': timeLimit + 'ms',
+            'Key directory': keyDirPath,
         },
-        frameInterval: config.frameInterval,
     };
 };
