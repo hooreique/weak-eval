@@ -30,7 +30,7 @@ const pause = () => {
 };
 
 Promise.resolve()
-    .then(configurer(dir, config, 'java'))
+    .then(configurer(dir, config, 'Java'))
     .then(main)
     .catch(error)
     .finally(pause);

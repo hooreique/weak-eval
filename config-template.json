@@ -2,6 +2,7 @@
   "codeDirName": "solutions",
   "outDirName": "out",
   "keyDirName": "tests",
+  "reportDirName": "report",
   "keyOrderAsc": false,
   "maxCapacity": 4,
   "frameInterval": 300,

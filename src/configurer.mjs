@@ -48,13 +48,15 @@ const configurer = lang => {
 const supportedLanguages = new Set(['java']);
 const isSupported = lang => supportedLanguages.has(lang);
 
-export default (dir, config, lang) => () => {
+export default (dir, config, language) => () => {
+    const lang = language.toLowerCase();
     if (!isSupported(lang))
-        throwNewError(`Currently ${lang} is not supported.`);
+        throwNewError(`${lang.toUpperCase()} is currently not supported.`);
 
     const codeDirPath = join(dir, config?.codeDirName || 'solutions');
     const outDirPath = join(dir, config?.outDirName || 'out');
     const keyDirPath = join(dir, config?.keyDirName || 'tests');
+    const reportDirPath = join(dir, config?.reportDirName || 'report');
     const keyOrderAsc = config?.keyOrderAsc ? true : false;
     const maxCapacity = config?.maxCapacity || 4;
     const frameInterval = config?.frameInterval || 300;
@@ -75,21 +77,26 @@ export default (dir, config, lang) => () => {
             command: compileCommand,
             args: compileArgs,
         },
-        runOption: {
-            command: runCommand,
-            args: runArgs,
-            timeLimit,
+        producingOption: {
+            runOption: {
+                command: runCommand,
+                args: runArgs,
+                timeLimit,
+            },
+            keyDirPath,
+            keyOrderAsc,
+            maxCapacity,
         },
-        keyDirPath,
-        keyOrderAsc,
-        maxCapacity,
-        frameInterval,
-        columnCount,
-        info: {
-            Compile: [compileCommand, ...compileArgs].join(' '),
-            Run: [runCommand, ...runArgs].join(' '),
-            'Time limit': timeLimit + 'ms',
-            'Key directory': keyDirPath,
+        consumingOption: {
+            reportDirPath,
+            frameInterval,
+            columnCount,
+            info: {
+                Compile: [compileCommand, ...compileArgs].join(' '),
+                Run: [runCommand, ...runArgs].join(' '),
+                'Time limit': timeLimit + 'ms',
+                'Key directory': keyDirPath,
+            },
         },
     };
 };
