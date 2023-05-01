@@ -15,4 +15,4 @@ Windows PC 에서 간단하게 코딩테스트 평가를 하기 위해 만들었
   - C++
   - Python
 - 파일로 결과 리포트하기
-- 처음 돌릴 때 (pollAndSet) 적절한 시간 간격 두기
+- .gitignore 정리하기
