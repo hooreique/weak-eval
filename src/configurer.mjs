@@ -57,7 +57,7 @@ export default (dir, config, lang) => () => {
     const keyDirPath = join(dir, config?.keyDirName || 'tests');
     const keyOrderAsc = config?.keyOrderAsc ? true : false;
     const maxCapacity = config?.maxCapacity || 4;
-    const frameInterval = config?.frameInterval || 500;
+    const frameInterval = config?.frameInterval || 300;
     const columnCount = config?.columnCount || 4;
     const timeLimit =
         config?.timeLimit?.[lang] ||

@@ -6,7 +6,7 @@ export default (info, frameInterval, columnCount) => view => {
     const formattedInfo = format(info);
 
     const intervalId = setInterval(
-        () => render(view, formattedInfo),
+        () => render(view, formattedInfo, columnCount),
         frameInterval
     );
 
