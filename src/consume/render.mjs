@@ -1,7 +1,7 @@
 import print from './print.mjs';
 import { result } from '../domain/result.mjs';
 
-export default async (view, formattedInfo) => {
+export default async (view, formattedInfo, columnCount) => {
     const results = [];
 
     for (const [keyId, resultPromise] of view) {
@@ -11,5 +11,5 @@ export default async (view, formattedInfo) => {
         ]);
     }
 
-    print(results, formattedInfo);
+    print(results, formattedInfo, columnCount);
 };

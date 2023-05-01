@@ -16,11 +16,12 @@ const isValid = keyPair =>
     isAbsolute(keyPair[1]);
 
 const filter = keyPairMap => {
-    /*
+    /* 잘못된 값 넣어 보기
     keyPairMap.set('foo', ['.in', '.ou']);
     keyPairMap.set('bar', [undefined, '.out']);
     keyPairMap.set('!!!', ['.in', '.out']);
-    */
+    // */
+
     keyPairMap.forEach((keyPair, keyId, map) => {
         if (!isValid(keyPair)) map.delete(keyId);
     });
