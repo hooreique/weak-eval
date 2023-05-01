@@ -1,13 +1,15 @@
 import print from './print.mjs';
 import { result } from '../domain/result.mjs';
 
+const PENDING_RESULT = { value: result.PENDING, time: NaN };
+
 export default async (view, formattedInfo, columnCount) => {
     const results = [];
 
     for (const [keyId, resultPromise] of view) {
         results.push([
             keyId,
-            await Promise.race([resultPromise, result.PENDING]),
+            await Promise.race([resultPromise, PENDING_RESULT]),
         ]);
     }
 
