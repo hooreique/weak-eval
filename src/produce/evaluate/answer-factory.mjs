@@ -1,13 +1,13 @@
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
-import { newAnswer } from '../../util/string.mjs';
+import newAnswerContainer from './answer-container.mjs';
 
 export default ({ command, args, timeLimit }, inKey) =>
     () => {
         const input = readFileSync(inKey);
 
-        const answer = newAnswer();
+        const answerContainer = newAnswerContainer();
 
         const run = spawn(command, args, { timeout: timeLimit * 2 });
 
@@ -22,8 +22,8 @@ export default ({ command, args, timeLimit }, inKey) =>
             run?.stderr?.end();
         });
 
-        run?.stdout?.on('data', data => {
-            answer.push(data);
+        run?.stdout?.on('data', buffer => {
+            answerContainer.push(buffer);
         });
 
         run?.stdin?.write(input);
@@ -32,6 +32,6 @@ export default ({ command, args, timeLimit }, inKey) =>
         return once(run, 'close').then(([code, signal]) => ({
             code,
             signal,
-            answer,
+            answerContainer,
         }));
     };

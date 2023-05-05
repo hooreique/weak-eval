@@ -6,7 +6,7 @@ const withNaN = value => ({ value, time: NaN });
 const withTime = (value, time) => ({ value, time });
 
 export default ({ timeLimit }, outKey) =>
-    ({ code, signal, answer }) => {
+    ({ code, signal, answerContainer }) => {
         if (code !== 0 && code !== 1 && signal !== 'SIGTERM')
             return result.UNKNOWN;
 
@@ -14,22 +14,11 @@ export default ({ timeLimit }, outKey) =>
 
         if (code === 1) return withNaN(result.ERROR);
 
-        const prunedAnswer = prune(answer);
-
-        const leftMarker = prunedAnswer.lastIndexOf('^');
-        const rightMarker = prunedAnswer.lastIndexOf('$');
-
-        const duration = parseInt(
-            prunedAnswer.substring(leftMarker + 1, rightMarker)
-        );
+        const [answer, duration] = answerContainer.getAnswerAndDuration();
 
         if (!(duration <= timeLimit)) return withTime(result.TIMEOUT, duration);
 
-        const prunedKey = prune(readFileSync(outKey));
-
-        const pureAnswer = prunedAnswer.substring(0, leftMarker - 1);
-
-        return pureAnswer === prunedKey
+        return prune(readFileSync(outKey)) === prune(answer)
             ? withTime(result.CORRECT, duration)
             : withTime(result.INCORRECT, duration);
     };
