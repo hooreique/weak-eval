@@ -1,10 +1,10 @@
-import compiler from './compiler.mjs';
-import consumer from './consumer.mjs';
-import producer from './producer.mjs';
+import compile from './compile.mjs';
+import { setConfig } from './config.mjs';
+import consume from './consume.mjs';
+import produce from './produce.mjs';
 
-export default ({ compileOption, producingOption, consumingOption }) => {
-    return Promise.resolve()
-        .then(compiler(compileOption))
-        .then(producer(producingOption))
-        .then(consumer(consumingOption));
+export default (dir, language) => {
+    setConfig(dir, language);
+
+    return Promise.resolve().then(compile).then(produce).then(consume);
 };

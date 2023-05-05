@@ -1,0 +1,13 @@
+{
+  "codeDirName": "weak-eval-subject",
+  "outDirName": "weak-eval-out",
+  "keyDirName": "weak-eval-key",
+  "reportDirName": "weak-eval-report",
+  "keyOrderAsc": false,
+  "maxCapacity": 4,
+  "frameInterval": 300,
+  "columnCount": 4,
+  "timeLimit": {
+    "java": 2000
+  }
+}

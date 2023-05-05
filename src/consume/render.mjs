@@ -1,9 +1,9 @@
-import print from './print.mjs';
 import { result } from '../domain/result.mjs';
+import print from './print.mjs';
 
 const PENDING_RESULT = { value: result.PENDING, time: NaN };
 
-export default async (view, formattedInfo, columnCount) => {
+export default async (view, formattedInfo) => {
     const results = [];
 
     for (const [keyId, resultPromise] of view) {
@@ -13,5 +13,5 @@ export default async (view, formattedInfo, columnCount) => {
         ]);
     }
 
-    print(results, formattedInfo, columnCount);
+    print(results, formattedInfo);
 };

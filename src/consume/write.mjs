@@ -1,16 +1,19 @@
 import { log } from 'node:console';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { getConfig } from '../config.mjs';
 import { result as r } from '../domain/result.mjs';
 import { alignment, format } from '../util/csv.mjs';
 import { throwNewError } from '../util/error.mjs';
 
-const getDateTimeString = () => {
+const getFileName = () => {
     const iso = new Date().toISOString();
     return iso.substring(0, iso.lastIndexOf('.')).replaceAll(':', '');
 };
 
-export default async (view, reportDirPath) => {
+export default async view => {
+    const { reportDirPath } = getConfig().consumingOption;
+
     const body = [];
 
     for (const [keyId, resultPromise] of view) {
@@ -37,8 +40,6 @@ export default async (view, reportDirPath) => {
             if (err?.code !== 'EEXIST')
                 throwNewError('Something went wrong during making directory.');
         })
-        .then(() =>
-            writeFile(join(reportDirPath, getDateTimeString() + '.csv'), csv)
-        )
+        .then(() => writeFile(join(reportDirPath, getFileName() + '.csv'), csv))
         .then(() => log('Writing report has succeeded.'));
 };
