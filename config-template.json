@@ -1,7 +1,7 @@
 {
-  "codeDirName": "solutions",
+  "codeDirName": "subject",
   "outDirName": "out",
-  "keyDirName": "tests",
+  "keyDirName": "key",
   "reportDirName": "report",
   "keyOrderAsc": false,
   "maxCapacity": 4,
