@@ -4,10 +4,7 @@ import { createInterface } from 'node:readline/promises';
 import main from './src/main.mjs';
 
 const pause = () => {
-    const rl = createInterface({
-        input: stdin,
-        output: stdout,
-    });
+    const rl = createInterface({ input: stdin, output: stdout });
 
     rl.question('Press enter...')
         .catch(error)
