@@ -17,9 +17,9 @@ const isValid = keyPair =>
 
 const filter = keyPairMap => {
     /* 잘못된 값 넣어 보기
-    keyPairMap.set('foo', ['.in', '.ou']);
-    keyPairMap.set('bar', [undefined, '.out']);
-    keyPairMap.set('!!!', ['.in', '.out']);
+    keyPairMap.set('foo', [undefined, '999.out']);
+    keyPairMap.set('bar', ['999.in', '999.ou']);
+    keyPairMap.set('!!!', ['999.in', '999.out']);
     // */
 
     keyPairMap.forEach((keyPair, keyId, map) => {
@@ -41,4 +41,4 @@ const transform = keyTree => {
     return keyPairMap;
 };
 
-export default keyTree => pipe(transform, filter, wrap)(keyTree);
+export default pipe(transform, filter, wrap);
