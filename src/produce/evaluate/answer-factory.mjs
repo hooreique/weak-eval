@@ -1,37 +1,39 @@
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
+import { getConfig } from '../../config.mjs';
 import newAnswerContainer from './answer-container.mjs';
 
-export default ({ command, args, timeLimit }, inKey) =>
-    () => {
-        const input = readFileSync(inKey);
+export default inKey => () => {
+    const { command, args, timeLimit } = getConfig().producingOption.runOption;
 
-        const answerContainer = newAnswerContainer();
+    const input = readFileSync(inKey);
 
-        const run = spawn(command, args, { timeout: timeLimit * 2 });
+    const answerContainer = newAnswerContainer();
 
-        run?.on('error', err => run?.kill());
-        run?.stdin?.on('error', err => run?.kill());
-        run?.stdout?.on('error', err => run?.kill());
-        run?.stderr?.on('error', err => run?.kill());
+    const run = spawn(command, args, { timeout: timeLimit * 2 });
 
-        once(run, 'exit').then(([code, signal]) => {
-            run?.stdin?.end();
-            run?.stdout?.end();
-            run?.stderr?.end();
-        });
+    run?.on('error', err => run?.kill());
+    run?.stdin?.on('error', err => run?.kill());
+    run?.stdout?.on('error', err => run?.kill());
+    run?.stderr?.on('error', err => run?.kill());
 
-        run?.stdout?.on('data', buffer => {
-            answerContainer.push(buffer);
-        });
-
-        run?.stdin?.write(input);
+    once(run, 'exit').then(([code, signal]) => {
         run?.stdin?.end();
+        run?.stdout?.end();
+        run?.stderr?.end();
+    });
 
-        return once(run, 'close').then(([code, signal]) => ({
-            code,
-            signal,
-            answerContainer,
-        }));
-    };
+    run?.stdout?.on('data', buffer => {
+        answerContainer.push(buffer);
+    });
+
+    run?.stdin?.write(input);
+    run?.stdin?.end();
+
+    return once(run, 'close').then(([code, signal]) => ({
+        code,
+        signal,
+        answerContainer,
+    }));
+};

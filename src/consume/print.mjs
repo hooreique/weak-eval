@@ -1,4 +1,5 @@
 import { clear, log } from 'node:console';
+import { getConfig } from '../config.mjs';
 import { result } from '../domain/result.mjs';
 
 const BLANK = Symbol('');
@@ -34,7 +35,9 @@ const yieldFormatAndArgs = function* (results, columnCount) {
 
 let frameCount = 0;
 
-export default (results, formattedInfo, columnCount = 4) => {
+export default (results, formattedInfo) => {
+    const { columnCount } = getConfig().consumingOption;
+
     const formats = [];
     const argss = [];
 

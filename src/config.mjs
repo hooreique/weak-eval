@@ -1,7 +1,11 @@
-import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { isAbsolute, join } from 'node:path';
 import { throwNewError } from './util/error.mjs';
 
+const supportedLangs = new Set(['java']);
+
 const staticConfig = {
+    configFileName: 'weak-eval-config.json',
     runnerBaseDir: '.\\src\\language',
     language: {
         java: {
@@ -17,7 +21,7 @@ const staticConfig = {
     },
 };
 
-const configurer = lang => {
+const languageConfigurer = lang => {
     const runnerDirPath = join(staticConfig.runnerBaseDir, lang);
 
     return {
@@ -45,34 +49,69 @@ const configurer = lang => {
     };
 };
 
-const supportedLanguages = new Set(['java']);
-const isSupported = lang => supportedLanguages.has(lang);
+const isProperDir = dir => dir && typeof dir === 'string' && isAbsolute(dir);
 
-export default (dir, config, language) => () => {
-    const lang = language.toLowerCase();
-    if (!isSupported(lang))
-        throwNewError(`${lang.toUpperCase()} is currently not supported.`);
+const isSupported = lang => supportedLangs.has(lang);
 
-    const codeDirPath = join(dir, config?.codeDirName || 'solutions');
-    const outDirPath = join(dir, config?.outDirName || 'out');
-    const keyDirPath = join(dir, config?.keyDirName || 'tests');
-    const reportDirPath = join(dir, config?.reportDirName || 'report');
-    const keyOrderAsc = config?.keyOrderAsc ? true : false;
-    const maxCapacity = config?.maxCapacity || 4;
-    const frameInterval = config?.frameInterval || 300;
-    const columnCount = config?.columnCount || 4;
+let config = null;
+let dir = '';
+let lang = '';
+let setAt = 0;
+let gotAt = -1;
+
+export const setConfig = (_dir, language) => {
+    const _lang = language.toLowerCase();
+
+    if (!isProperDir(_dir))
+        throwNewError('Provide a proper absolute subject directory.');
+
+    if (!isSupported(_lang))
+        throwNewError(`${_lang.toUpperCase()} is currently not supported.`);
+
+    dir = _dir;
+    lang = _lang;
+    ++setAt;
+};
+
+export const getConfig = () => {
+    if (config !== null && gotAt === setAt) return config;
+
+    if (dir === '' || lang === '')
+        throwNewError('Set the config before getting it.');
+
+    let configFromFile;
+    try {
+        configFromFile = JSON.parse(
+            readFileSync(join(dir, staticConfig.configFileName))
+        );
+    } catch (err) {
+        throwNewError(
+            `Provide a proper \`${staticConfig.configFileName}\` in the base directory.`
+        );
+    }
+
+    const codeDirPath = join(dir, configFromFile?.codeDirName || 'solutions');
+    const outDirPath = join(dir, configFromFile?.outDirName || 'out');
+    const keyDirPath = join(dir, configFromFile?.keyDirName || 'tests');
+    const reportDirPath = join(dir, configFromFile?.reportDirName || 'report');
+    const keyOrderAsc = configFromFile?.keyOrderAsc ? true : false;
+    const maxCapacity = configFromFile?.maxCapacity || 4;
+    const frameInterval = configFromFile?.frameInterval || 300;
+    const columnCount = configFromFile?.columnCount || 4;
     const timeLimit =
-        config?.timeLimit?.[lang] ||
+        configFromFile?.timeLimit?.[lang] ||
         staticConfig.language[java].defaultTimeLimit;
 
-    const langConf = configurer(lang);
+    const languageConfig = languageConfigurer(lang);
 
     const compileCommand = staticConfig.language[lang].command.compile;
-    const compileArgs = langConf.getCompileArgs(outDirPath, codeDirPath);
+    const compileArgs = languageConfig.getCompileArgs(outDirPath, codeDirPath);
     const runCommand = staticConfig.language[lang].command.run;
-    const runArgs = langConf.getRunArgs(outDirPath);
+    const runArgs = languageConfig.getRunArgs(outDirPath);
 
-    return {
+    gotAt = setAt;
+
+    return (config = {
         compileOption: {
             command: compileCommand,
             args: compileArgs,
@@ -98,5 +137,5 @@ export default (dir, config, language) => () => {
                 'Key directory': keyDirPath,
             },
         },
-    };
+    });
 };

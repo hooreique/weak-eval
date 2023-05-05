@@ -1,12 +1,15 @@
 import { readFileSync } from 'node:fs';
+import { getConfig } from '../../config.mjs';
 import { result } from '../../domain/result.mjs';
 import { prune } from '../../util/string.mjs';
 
 const withNaN = value => ({ value, time: NaN });
 const withTime = (value, time) => ({ value, time });
 
-export default ({ timeLimit }, outKey) =>
+export default outKey =>
     ({ code, signal, answerContainer }) => {
+        const { timeLimit } = getConfig().producingOption.runOption;
+
         if (code !== 0 && code !== 1 && signal !== 'SIGTERM')
             return result.UNKNOWN;
 
