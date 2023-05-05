@@ -1,10 +1,9 @@
 import { log } from 'node:console';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { result } from '../domain/result.mjs';
+import { result as r } from '../domain/result.mjs';
+import { alignment, format } from '../util/csv.mjs';
 import { throwNewError } from '../util/error.mjs';
-
-const head = ['ID   ', 'Pass', 'Result   ', 'Time'];
 
 const getDateTimeString = () => {
     const iso = new Date().toISOString();
@@ -12,19 +11,24 @@ const getDateTimeString = () => {
 };
 
 export default async (view, reportDirPath) => {
-    const data = [[...head]];
+    const body = [];
 
-    for (const [keyId, promise] of view) {
-        const r = await promise;
-        data.push([
-            keyId,
-            r.value === result.CORRECT ? 'Y   ' : 'N   ',
-            r.value.name,
-            isNaN(r.time) ? '-1' : '' + r.time,
+    for (const [keyId, resultPromise] of view) {
+        const result = await resultPromise;
+        body.push([
+            /* ID     */ keyId,
+            /* Pass   */ result.value === r.CORRECT ? 'Y' : 'N',
+            /* Result */ result.value.name,
+            /* Time   */ isNaN(result.time) ? '-1' : '' + result.time,
         ]);
     }
 
-    const csv = data.map(v => v.join('\t,')).join('\n') + '\n';
+    const csv = format(['ID', 'Pass', 'Result', 'Time'], body, [
+        alignment.R,
+        alignment.L,
+        alignment.L,
+        alignment.R,
+    ]);
 
     return Promise.resolve()
         .then(() => log('Writing report...'))

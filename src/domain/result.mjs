@@ -1,9 +1,9 @@
 const PENDING = {
-    name: 'PENDING  ',
+    name: 'PENDING',
     message: '채점 중...',
 };
 const CORRECT = {
-    name: 'CORRECT  ',
+    name: 'CORRECT',
     message: '정답입니다.',
 };
 const INCORRECT = {
@@ -11,15 +11,15 @@ const INCORRECT = {
     message: '틀렸습니다.',
 };
 const TIMEOUT = {
-    name: 'TIMEOUT  ',
+    name: 'TIMEOUT',
     message: '시간 초과',
 };
 const ERROR = {
-    name: 'ERROR    ',
+    name: 'ERROR',
     message: '런타임 에러',
 };
 const UNKNOWN = {
-    name: 'UNKNOWN  ',
+    name: 'UNKNOWN',
     message: '알 수 없음',
 };
 
