@@ -1,5 +1,5 @@
 
-*
+/*
 
-!.gitignore
-!launch-*.json
+!/.gitignore
+!/launch-*.json
