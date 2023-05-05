@@ -1,4 +1,5 @@
 import { clear, log } from 'node:console';
+import { getConfig } from '../config.mjs';
 import { result } from '../domain/result.mjs';
 
 const BLANK = Symbol('');
@@ -18,9 +19,9 @@ colorFormat.set(result.ERROR, '\x1b[97m%s\x1b[90m => \x1b[94m%s\t');
 //                                          Unknown => Cyan
 colorFormat.set(result.UNKNOWN, '\x1b[97m%s\x1b[90m => \x1b[96m%s\t');
 
-const formatAndArgs = ([keyId, result]) => [
-    colorFormat.get(result),
-    [keyId, result.message],
+const formatAndArgs = ([keyId, { value }]) => [
+    colorFormat.get(value),
+    [keyId, value.message],
 ];
 
 const yieldFormatAndArgs = function* (results, columnCount) {
@@ -34,7 +35,9 @@ const yieldFormatAndArgs = function* (results, columnCount) {
 
 let frameCount = 0;
 
-export default (results, formattedInfo, columnCount = 4) => {
+export default (results, formattedInfo) => {
+    const { columnCount } = getConfig().consumingOption;
+
     const formats = [];
     const argss = [];
 

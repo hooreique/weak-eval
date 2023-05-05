@@ -1,32 +1,39 @@
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { readFileSync } from 'node:fs';
-import { newAnswer } from '../../util/answer.mjs';
+import { getConfig } from '../../config.mjs';
+import newAnswerContainer from './answer-container.mjs';
 
-export default ({ command, args, timeLimit }, inKey) =>
-    () => {
-        const run = spawn(command, args, { timeout: timeLimit });
+export default inKey => () => {
+    const { command, args, timeLimit } = getConfig().producingOption.runOption;
 
-        run?.on('error', err => run?.kill());
-        run?.stdin?.on('error', err => run?.kill());
-        run?.stdout?.on('error', err => run?.kill());
-        run?.stderr?.on('error', err => run?.kill());
+    const input = readFileSync(inKey);
 
-        once(run, 'exit').then(([code, signal]) => {
-            run?.stdin?.end();
-            run?.stdout?.end();
-            run?.stderr?.end();
-        });
+    const answerContainer = newAnswerContainer();
 
-        const answer = newAnswer();
-        run?.stdout?.on('data', data => answer.push(data));
+    const run = spawn(command, args, { timeout: timeLimit * 2 });
 
-        run?.stdin?.write(readFileSync(inKey));
+    run?.on('error', err => run?.kill());
+    run?.stdin?.on('error', err => run?.kill());
+    run?.stdout?.on('error', err => run?.kill());
+    run?.stderr?.on('error', err => run?.kill());
+
+    once(run, 'exit').then(([code, signal]) => {
         run?.stdin?.end();
+        run?.stdout?.end();
+        run?.stderr?.end();
+    });
 
-        return once(run, 'close').then(([code, signal]) => ({
-            answer,
-            code,
-            signal,
-        }));
-    };
+    run?.stdout?.on('data', buffer => {
+        answerContainer.push(buffer);
+    });
+
+    run?.stdin?.write(input);
+    run?.stdin?.end();
+
+    return once(run, 'close').then(([code, signal]) => ({
+        code,
+        signal,
+        answerContainer,
+    }));
+};

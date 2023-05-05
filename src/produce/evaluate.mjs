@@ -1,7 +1,8 @@
 import answerFactory from './evaluate/answer-factory.mjs';
 import resultFactory from './evaluate/result-factory.mjs';
 
-export default (runOption, [inKey, outKey]) =>
-    Promise.resolve()
-        .then(answerFactory(runOption, inKey))
+export default ([inKey, outKey]) => {
+    return Promise.resolve()
+        .then(answerFactory(inKey))
         .then(resultFactory(outKey));
+};

@@ -4,10 +4,10 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "test-name",
+      "name": "weak-eval-test",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\index.mjs",
-      "args": ["${workspaceFolder}\\workbench\\test-folder"],
+      "args": ["${workspaceFolder}\\workbench\\weak-eval-test"],
       "console": "integratedTerminal"
     }
   ]
