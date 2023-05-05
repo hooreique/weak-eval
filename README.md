@@ -14,3 +14,5 @@ Windows PC 에서 간단하게 코딩테스트 평가를 하기 위해 만들었
 - 다른 언어 추가하기
   - C++
   - Python
+- Config 성 파라미터 제거하기
+- 마커 추출 로직 `util/string.mjs`로 분리하기
