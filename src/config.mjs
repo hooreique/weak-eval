@@ -2,8 +2,6 @@ import { readFileSync } from 'node:fs';
 import { isAbsolute, join } from 'node:path';
 import { throwNewError } from './util/error.mjs';
 
-const supportedLangs = new Set(['java']);
-
 const staticConfig = {
     configFileName: 'weak-eval-config.json',
     runnerBaseDir: '.\\src\\language',
@@ -49,9 +47,11 @@ const languageConfigurer = lang => {
     };
 };
 
-const isProperDir = dir => dir && typeof dir === 'string' && isAbsolute(dir);
+const supportedLangs = new Set(['java']);
 
 const isSupported = lang => supportedLangs.has(lang);
+
+const isProperDir = dir => dir && typeof dir === 'string' && isAbsolute(dir);
 
 let config = null;
 let dir = '';
@@ -62,11 +62,11 @@ let gotAt = -1;
 export const setConfig = (_dir, language) => {
     const _lang = language.toLowerCase();
 
-    if (!isProperDir(_dir))
-        throwNewError('Provide a proper absolute subject directory.');
-
     if (!isSupported(_lang))
         throwNewError(`${_lang.toUpperCase()} is currently not supported.`);
+
+    if (!isProperDir(_dir))
+        throwNewError('Provide a proper absolute subject directory.');
 
     dir = _dir;
     lang = _lang;
